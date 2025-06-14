@@ -1,9 +1,13 @@
 const fs = require('fs')
 const puppeteer = require('puppeteer')
-const removeProxy = require('./removeProxy')
+const removeProxy = require('./removeProxy');
+const removeProxyFile = require('./removeProxyFile');
+const googleDetection = require('./googleDetection');
 
 // Add a flag to control scraping
 let isScrapingActive = true;
+let proxyAuthErrorCount = 0;
+let googleErrorCount = 0;
 
 // Function to stop scraping
 function stopScraping() {
@@ -38,6 +42,7 @@ async function moveMouseRandomly(page) {
     await page.mouse.move(x, y, { steps: 10 });
 }
 
+
 // Simulate human-like scrolling with faster timing
 async function humanScroll(page) {
     await page.evaluate(async () => {
@@ -62,6 +67,8 @@ const runUrl = async (url) => {
     // Reset the flag when starting new scrape
     isScrapingActive = true;
 
+    
+
     try {
         // Read and validate proxy file
         if (!fs.existsSync('uploads/proxy.txt')) {
@@ -78,13 +85,28 @@ const runUrl = async (url) => {
         }
 
         for (let i = 0; i < proxies.length; i++) {
+
+            if(proxyAuthErrorCount >= 5) {
+                await removeProxyFile()
+                proxyAuthErrorCount = 0;
+                stopScraping();
+                return;
+            }
+            
             // Check if scraping should stop
             if (!isScrapingActive) {
                 console.log('Scraping stopped by user');
                 return;
             }
 
+            if(googleErrorCount >= 5) {
+                googleErrorCount = 0;
+                stopScraping();
+                return;
+            }
+            
             const proxy = proxies[i].trim()
+            console.log(proxy)
             let browser = null;
             let success = false;
 
@@ -138,40 +160,45 @@ const runUrl = async (url) => {
                 };
 
                 const errorHandler = async err => {
-                    // console.log('Page error:', err);
-                    await removeProxy(proxy, 'uploads/proxy.txt');
+                    if (err.message && err.message.includes('auth')) {
+                        proxyAuthErrorCount++;
+                        console.log('Auth error count:', proxyAuthErrorCount);
+                        await removeProxy(proxy, 'uploads/proxy.txt');
+                    }
                 };
 
                 const failedHandler = async request => {
                     const failure = request.failure();
-                    // console.log('Request failed:', request.url(), failure);
                     if (failure && (
                         failure.errorText.includes('ERR_PROXY_CONNECTION_FAILED') ||
                         failure.errorText.includes('ERR_TUNNEL_CONNECTION_FAILED') ||
-                        failure.errorText.includes('ERR_HTTP_RESPONSE_CODE_FAILURE')
+                        failure.errorText.includes('ERR_HTTP_RESPONSE_CODE_FAILURE') ||
+                        failure.errorText.includes('ERR_PROXY_AUTH_UNSUPPORTED') ||
+                        failure.errorText.includes('ERR_AUTH_FAILED')
                     )) {
+                        proxyAuthErrorCount++;
+                        console.log('Auth error count:', proxyAuthErrorCount);
                         await removeProxy(proxy, 'uploads/proxy.txt');
                     }
                 };
 
-                const responseHandler = async response => {
-                    // console.log('Response:', response.url(), response.status());
-                    if (response.status() === 407) {
-                        // console.log('Proxy authentication failed');
-                        await removeProxy(proxy, 'uploads/proxy.txt');
-                    }
-                };
+                
 
                 // Set up event handlers
                 page.on('request', requestHandler);
                 page.on('error', errorHandler);
                 page.on('requestfailed', failedHandler);
-                page.on('response', responseHandler);
 
                 // Set authentication
                 if (username && password) {
-                    // console.log('Setting proxy authentication...');
-                    await page.authenticate({ username, password });
+                    try {
+                        await page.authenticate({ username, password });
+                    } catch (authError) {
+                        proxyAuthErrorCount++;
+                        console.log('Auth error count:', proxyAuthErrorCount);
+                        await removeProxy(proxy, 'uploads/proxy.txt');
+                        throw authError;
+                    }
                 }
 
                 // Enable requests after authentication
@@ -229,6 +256,16 @@ const runUrl = async (url) => {
                             timeout: 30000
                         }).catch(e => console.log('Navigation after click timed out'));
                         
+                        // Check for Google detection immediately after navigation
+                        const isGoogle = await googleDetection(page);
+                        if(isGoogle) {
+                            googleErrorCount++;
+                            console.log('Google detection triggered. Error count:', googleErrorCount);
+                            success = false;  // Mark this attempt as unsuccessful
+                            await removeProxy(proxy, 'uploads/proxy.txt');
+                            return;  // Exit this proxy attempt
+                        }
+
                         success = true;
                         
                         // Final actions with remaining time
@@ -256,7 +293,10 @@ const runUrl = async (url) => {
                 }
             } finally {
                 if (browser) {
-                    await removeProxy(proxy, 'uploads/proxy.txt');
+                    // Only remove proxy if the attempt wasn't successful
+                    if (!success) {
+                        await removeProxy(proxy, 'uploads/proxy.txt');
+                    }
                     await browser.close();
                 }
             }

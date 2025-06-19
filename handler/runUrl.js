@@ -3,6 +3,7 @@ const puppeteer = require('puppeteer')
 const removeProxy = require('./removeProxy');
 const removeProxyFile = require('./removeProxyFile');
 const googleDetection = require('./googleDetection');
+const workCountIncrease = require('./workCountIncrease');
 
 // Add a flag to control scraping
 let isScrapingActive = true;
@@ -275,6 +276,7 @@ const runUrl = async (url) => {
                         // Random final delay to reach 20-24 seconds total
                         const remainingDelay = Math.floor(Math.random() * 4000) + 20000; // 20-24 seconds
                         await sleep(remainingDelay - 19000); // Subtract approximate time of previous actions
+                        await workCountIncrease()
                     }
                 } catch (error) {
                     console.log('Error interacting with iframe:', error.message);

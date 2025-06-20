@@ -286,7 +286,7 @@ const runUrl = async (url) => {
                 page.off('request', requestHandler);
                 page.off('error', errorHandler);
                 page.off('requestfailed', failedHandler);
-                page.off('response', responseHandler);
+                // page.off('response', responseHandler);
 
             } catch (error) {
                 console.error('Session error:', error);

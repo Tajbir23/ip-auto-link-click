@@ -252,10 +252,7 @@ const runUrl = async (url) => {
                     });
 
                     if (linkClicked) {
-                        await page.waitForNavigation({
-                            waitUntil: 'networkidle2',
-                            timeout: 30000
-                        }).catch(e => console.log('Navigation after click timed out'));
+                        await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
                         
                         // Check for Google detection immediately after navigation
                         const isGoogle = await googleDetection(page);

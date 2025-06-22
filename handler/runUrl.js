@@ -180,6 +180,9 @@ const runUrl = async (url) => {
                         proxyAuthErrorCount++;
                         console.log('Auth error count:', proxyAuthErrorCount);
                         await removeProxy(proxy, 'uploads/proxy.txt');
+                        await browser.close();
+                        console.log('Auth error, closing browser');
+                        return;
                     }
                 };
 
@@ -198,7 +201,9 @@ const runUrl = async (url) => {
                         proxyAuthErrorCount++;
                         console.log('Auth error count:', proxyAuthErrorCount);
                         await removeProxy(proxy, 'uploads/proxy.txt');
-                        throw authError;
+                        await browser.close();
+                        console.log('Auth error, closing browser');
+                        return;
                     }
                 }
 

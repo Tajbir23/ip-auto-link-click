@@ -87,7 +87,7 @@ const runUrl = async (url) => {
 
         for (let i = 0; i < proxies.length; i++) {
 
-            if(proxyAuthErrorCount >= 5) {
+            if(proxyAuthErrorCount >= 10) {
                 await removeProxyFile()
                 proxyAuthErrorCount = 0;
                 stopScraping();
@@ -226,14 +226,17 @@ const runUrl = async (url) => {
                 const randomFrameIndex = Math.floor(Math.random() * frames.length);
                 const selectedFrame = frames[randomFrameIndex];
                 
+                // Wait for the iframe's content to be fully loaded
                 const frameHandle = await selectedFrame.contentFrame();
                 if (!frameHandle) {
                     console.log('Could not access iframe content');
                     return;
                 }
+                // Wait for the iframe's DOM to be fully loaded
+                await frameHandle.waitForFunction('document.readyState === "complete"');
 
                 try {
-                    await frameHandle.waitForSelector('[data-testid="post_message"]', { timeout: 5000 });
+                    await frameHandle.waitForSelector('[data-testid="post_message"]', { timeout: 10000 });
                     
                     // Quick delay before clicking
                     await randomDelay(500, 800);
@@ -270,9 +273,10 @@ const runUrl = async (url) => {
                         await randomDelay(800, 1200);
                         await humanScroll(page);
                         
-                        // Random final delay to reach 20-24 seconds total
-                        const remainingDelay = Math.floor(Math.random() * 4000) + 20000; // 20-24 seconds
+                        // Random final delay to reach 5-7 seconds total
+                        const remainingDelay = Math.floor(Math.random() * 2000) + 5000; // 5-7 seconds
                         await sleep(remainingDelay - 19000); // Subtract approximate time of previous actions
+                        console.log('Remaining delay:', remainingDelay);
                         await workCountIncrease()
                     }
                 } catch (error) {

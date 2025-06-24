@@ -1,84 +1,82 @@
 @echo off
 setlocal enabledelayedexpansion
 
-:menu
+:main_menu
 cls
 echo.
-echo === This is for fucking ip auto link click ===
+echo === IP Auto Link Click Servers ===
 echo.
 
-:: Show counts
-for /f "tokens=* usebackq" %%a in (`curl -s http://localhost:3000/total-work-count`) do (
-    set total=%%a
+:: Build a list of running server ports
+set i=0
+set "ports="
+for %%f in (server-*.pid) do (
+    set "filename=%%~nf"
+    set "port=!filename:~7!"
+    set /a i+=1
+    set "port_!i!=!port!"
+    set "ports=!ports! !port!"
 )
-for /f "tokens=* usebackq" %%a in (`curl -s http://localhost:3000/today-work-count`) do (
-    set today=%%a
+set "server_count=!i!"
+
+if !server_count! == 0 (
+    echo No running servers found.
+) else (
+    echo Running servers:
+    set i=0
+    for %%p in (!ports!) do (
+        set /a i+=1
+        echo   !i!. Port %%p
+    )
 )
 
-echo Total Work Count: %total%
-echo Today's Work Count: %today%
 echo.
-echo Choose an option:
-echo 0. Start Server (npm run dev)
-echo 1. Stop Server
-echo 2. Start Scraping
-echo 3. Reset IP
-echo 4. Stop Scraping
-echo 5. Resume Scraping
-echo 6. Exit
-echo.
-
-set /p choice="Enter your choice (0-6): "
-
-if "%choice%"=="0" (
+echo 0. Start New Server (npm run dev)
+echo 9. Exit
+set /p sel="Select a server by number, or choose 0/9: "
+if "%sel%"=="0" (
     echo Starting server in new window...
     start "IP Auto Link Click Server" cmd /k "npm run dev"
-    echo Waiting for server to start...
     timeout /t 5 >nul
-    goto menu
+    goto main_menu
 )
+if "%sel%"=="9" exit
 
-if "%choice%"=="1" (
-    echo Stopping server...
-    taskkill /F /IM node.exe
-    echo Server stopped.
-    timeout /t 2 >nul
-    goto menu
+:: Validate selection
+set /a selnum=%sel% 2>nul
+if %selnum% lss 1 goto main_menu
+if %selnum% gtr !server_count! goto main_menu
+
+:: Get selected port
+for /f "tokens=2 delims== " %%a in ('set port_%selnum%') do set "selected_port=%%a"
+
+:server_menu
+cls
+echo.
+echo === Server running on port !selected_port! ===
+
+:: Show counts
+for /f "tokens=* usebackq" %%a in (`curl -s http://localhost:!selected_port!/total-work-count`) do (
+    set total=%%a
 )
-
-if "%choice%"=="2" (
-    start http://localhost:3000
-    echo Opening browser for scraping...
-    timeout /t 2 >nul
-    goto menu
+for /f "tokens=* usebackq" %%a in (`curl -s http://localhost:!selected_port!/today-work-count`) do (
+    set today=%%a
 )
-
-if "%choice%"=="3" (
-    start http://localhost:3000/reset-ip
-    echo Opening browser for IP reset...
-    timeout /t 2 >nul
-    goto menu
-)
-
-if "%choice%"=="4" (
-    start http://localhost:3000/stop-scrape
-    echo Opening browser to stop scraping...
-    timeout /t 2 >nul
-    goto menu
-)
-
-if "%choice%"=="5" (
-    start http://localhost:3000/resume-scrape
-    echo Opening browser to resume scraping...
-    timeout /t 2 >nul
-    goto menu
-)
-
-if "%choice%"=="6" (
-    echo Exiting...
-    exit
-)
-
-echo Invalid choice. Please try again.
-timeout /t 2 >nul
-goto menu 
+echo Total Work Count: !total!
+echo Today's Work Count: !today!
+echo.
+echo Choose an option for port !selected_port!:
+echo 1. Open Scraping
+echo 2. Reset IP
+echo 3. Stop Scraping
+echo 4. Resume Scraping
+echo 5. Back to Server List
+echo 9. Exit
+set /p choice="Enter your choice (1-5/9): "
+if "%choice%"=="1" start http://localhost:!selected_port!
+if "%choice%"=="2" start http://localhost:!selected_port!/reset-ip
+if "%choice%"=="3" start http://localhost:!selected_port!/stop-scrape
+if "%choice%"=="4" start http://localhost:!selected_port!/resume-scrape
+if "%choice%"=="5" goto main_menu
+if "%choice%"=="9" exit
+goto server_menu 

@@ -7,6 +7,18 @@ const { runUrl, stopScraping } = require('./handler/runUrl')
 const totalWorkCount = require('./handler/totalWorkCount')
 const todayWorkCount = require('./handler/todayWorkCount')
 
+const net = require('net');
+const fs = require('fs');
+
+function findAvailablePort(startPort, callback) {
+    const server = net.createServer();
+    server.unref();
+    server.on('error', () => findAvailablePort(startPort + 1, callback));
+    server.listen({ port: startPort }, () => {
+        const port = server.address().port;
+        server.close(() => callback(port));
+    });
+}
 
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
@@ -68,63 +80,71 @@ app.get('/today-work-count', async(req, res) => {
     res.json({ today_ip_count: workCount })
 })
 
-app.listen(3000, async () => {
-    try {
-        const { execSync } = require('child_process');
-        
-        // Check for updates from git
-        console.log('Checking for updates...');
+findAvailablePort(3000, (PORT) => {
+    app.listen(PORT, async () => {
+        // Write PID file for this server
+        fs.writeFileSync(`server-${PORT}.pid`, process.pid.toString());
+        // Remove PID file on exit
+        process.on('exit', () => { try { fs.unlinkSync(`server-${PORT}.pid`); } catch {} });
+        process.on('SIGINT', () => { try { fs.unlinkSync(`server-${PORT}.pid`); } catch {} process.exit(); });
+        process.on('SIGTERM', () => { try { fs.unlinkSync(`server-${PORT}.pid`); } catch {} process.exit(); });
         try {
-            // Fetch latest changes
-            execSync('git fetch', { stdio: 'inherit' });
+            const { execSync } = require('child_process');
             
-            // Get current branch name
-            const currentBranch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
-            console.log(`Current branch: ${currentBranch}`);
-            
-            // Check if we're behind the remote
-            const behindCount = execSync(`git rev-list HEAD..origin/${currentBranch} --count`).toString().trim();
-            
-            if (parseInt(behindCount) > 0) {
-                console.log('Updates found, attempting to merge...');
+            // Check for updates from git
+            console.log('Checking for updates...');
+            try {
+                // Fetch latest changes
+                execSync('git fetch', { stdio: 'inherit' });
                 
-                try {
-                    // Try to merge with auto-stash and theirs strategy
-                    execSync('git config pull.rebase false', { stdio: 'inherit' });
-                    execSync('git stash', { stdio: 'inherit' });
-                    execSync(`git pull -X theirs`, { stdio: 'inherit' });
+                // Get current branch name
+                const currentBranch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
+                console.log(`Current branch: ${currentBranch}`);
+                
+                // Check if we're behind the remote
+                const behindCount = execSync(`git rev-list HEAD..origin/${currentBranch} --count`).toString().trim();
+                
+                if (parseInt(behindCount) > 0) {
+                    console.log('Updates found, attempting to merge...');
                     
-                    // Try to apply stashed changes
                     try {
-                        execSync('git stash pop', { stdio: 'inherit' });
-                    } catch (stashError) {
-                        console.log('Note: Stashed changes could not be applied, but update succeeded');
+                        // Try to merge with auto-stash and theirs strategy
+                        execSync('git config pull.rebase false', { stdio: 'inherit' });
+                        execSync('git stash', { stdio: 'inherit' });
+                        execSync(`git pull -X theirs`, { stdio: 'inherit' });
+                        
+                        // Try to apply stashed changes
+                        try {
+                            execSync('git stash pop', { stdio: 'inherit' });
+                        } catch (stashError) {
+                            console.log('Note: Stashed changes could not be applied, but update succeeded');
+                        }
+                        
+                        // Install dependencies
+                        console.log('Installing dependencies...');
+                        execSync('npm install', { stdio: 'inherit' });
+                        
+                        console.log('Successfully updated, merged changes, and installed dependencies');
+                    } catch (mergeError) {
+                        console.error('Error during merge:', mergeError.message);
+                        // Attempt to abort any pending merge
+                        try {
+                            execSync('git merge --abort', { stdio: 'inherit' });
+                        } catch (abortError) {
+                            // Ignore abort errors
+                        }
+                        console.log('Merge aborted. Please resolve conflicts manually');
                     }
-                    
-                    // Install dependencies
-                    console.log('Installing dependencies...');
-                    execSync('npm install', { stdio: 'inherit' });
-                    
-                    console.log('Successfully updated, merged changes, and installed dependencies');
-                } catch (mergeError) {
-                    console.error('Error during merge:', mergeError.message);
-                    // Attempt to abort any pending merge
-                    try {
-                        execSync('git merge --abort', { stdio: 'inherit' });
-                    } catch (abortError) {
-                        // Ignore abort errors
-                    }
-                    console.log('Merge aborted. Please resolve conflicts manually');
+                } else {
+                    console.log('Already up to date');
                 }
-            } else {
-                console.log('Already up to date');
+            } catch (error) {
+                console.error('Error during git operations:', error.message);
             }
+            
+            console.log(`Server is running on http://localhost:${PORT}`);
         } catch (error) {
-            console.error('Error during git operations:', error.message);
+            console.error('Error during update check:', error.message);
         }
-        
-        console.log(`Server is running on http://localhost:3000`);
-    } catch (error) {
-        console.error('Error during update check:', error.message);
-    }
-})
+    });
+});

@@ -1,3 +1,5 @@
 node_modules
 uploads/proxy.txt
 workCount.json
+*.pid
+server-*.pid

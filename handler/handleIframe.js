@@ -14,6 +14,7 @@ if (!frameHandle) {
 }
 // Wait for the iframe's DOM to be fully loaded
 await frameHandle.waitForFunction('document.readyState === "complete"');
+console.log('Iframe loaded');
 
 try {
     await frameHandle.waitForSelector('[data-testid="post_message"]', { timeout: 10000 });

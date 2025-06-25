@@ -66,205 +66,186 @@ async function humanScroll(page) {
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-const runUrl = async (url) => {
+const runUrl = async (url, proxy) => {
     // Reset the flag when starting new scrape
     isScrapingActive = true;
 
-    
-
     try {
-        // Read and validate proxy file
-        if (!fs.existsSync('uploads/proxy.txt')) {
-            console.log('Proxy file does not exist');
+        if (!proxy) {
+            console.log('No proxy provided');
             return;
         }
 
-        const proxyFile = fs.readFileSync('uploads/proxy.txt', 'utf-8')
-        const proxies = proxyFile.split('\n').map(line => line.trim()).filter(line => line !== '')
+        if(proxyAuthErrorCount >= 10) {
+            await removeProxyFile()
+            proxyAuthErrorCount = 0;
+            stopScraping();
+            return;
+        }
         
-        if (proxies.length === 0) {
-            console.log('No valid proxies found in file');
+        // Check if scraping should stop
+        if (!isScrapingActive) {
+            console.log('Scraping stopped by user');
             return;
         }
 
-        for (let i = 0; i < proxies.length; i++) {
+        if(googleErrorCount >= 5) {
+            googleErrorCount = 0;
+            stopScraping();
+            return;
+        }
+        
+        const [host, port, username, password] = proxy.split(':');
+        console.log(proxy)
+        let browser = null;
+        let success = false;
 
-            if(proxyAuthErrorCount >= 10) {
-                await removeProxyFile()
-                proxyAuthErrorCount = 0;
-                stopScraping();
-                return;
-            }
+        try {
+            browser = await puppeteer.launch({
+                headless: false,
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-web-security',
+                    `--proxy-server=${host}:${port}`,
+                    '--disable-blink-features=AutomationControlled',
+                    '--disable-features=IsolateOrigins,site-per-process',
+                    '--window-size=1920,1080'
+                ],
+                defaultViewport: {
+                    width: 1920,
+                    height: 1080
+                }
+            });
+
+            const page = await browser.newPage();
+
+            // Mask webdriver
+            await page.evaluateOnNewDocument(() => {
+                delete navigator.__proto__.webdriver;
+                Object.defineProperty(navigator, 'plugins', {
+                    get: () => [1, 2, 3, 4, 5]
+                });
+                Object.defineProperty(navigator, 'languages', {
+                    get: () => ['en-US', 'en']
+                });
+                window.chrome = {
+                    runtime: {}
+                };
+            });
+
+            // Block all requests until authenticated
+            await page.setRequestInterception(true);
+            let authenticated = false;
             
-            // Check if scraping should stop
-            if (!isScrapingActive) {
-                console.log('Scraping stopped by user');
-                return;
-            }
-
-            if(googleErrorCount >= 5) {
-                googleErrorCount = 0;
-                stopScraping();
-                return;
-            }
-            
-            const proxy = proxies[i].trim()
-            console.log(proxy)
-            let browser = null;
-            let success = false;
-
-            try {
-                // console.log(`\nTrying proxy ${i + 1}/${proxies.length}:`, proxy);
-                const [host, port, username, password] = proxy.split(':')
-                
-                browser = await puppeteer.launch({
-                    headless: false,
-                    args: [
-                        '--no-sandbox',
-                        '--disable-setuid-sandbox',
-                        '--disable-web-security',
-                        `--proxy-server=${host}:${port}`,
-                        '--disable-blink-features=AutomationControlled',
-                        '--disable-features=IsolateOrigins,site-per-process',
-                        '--window-size=1920,1080'
-                    ],
-                    defaultViewport: {
-                        width: 1920,
-                        height: 1080
-                    }
-                });
-
-                const page = await browser.newPage();
-
-                // Mask webdriver
-                await page.evaluateOnNewDocument(() => {
-                    delete navigator.__proto__.webdriver;
-                    Object.defineProperty(navigator, 'plugins', {
-                        get: () => [1, 2, 3, 4, 5]
-                    });
-                    Object.defineProperty(navigator, 'languages', {
-                        get: () => ['en-US', 'en']
-                    });
-                    window.chrome = {
-                        runtime: {}
-                    };
-                });
-
-                // Block all requests until authenticated
-                await page.setRequestInterception(true);
-                let authenticated = false;
-                
-                const requestHandler = request => {
-                    if (!authenticated) {
-                        request.abort();
-                        return;
-                    }
-                    request.continue();
-                };
-
-                const errorHandler = async err => {
-                    if (err.message && err.message.includes('auth')) {
-                        proxyAuthErrorCount++;
-                        console.log('Auth error count:', proxyAuthErrorCount);
-                        await removeProxy(proxy, 'uploads/proxy.txt');
-                    }
-                };
-
-                const failedHandler = async request => {
-                    const failure = request.failure();
-                    if (failure && (
-                        failure.errorText.includes('ERR_PROXY_CONNECTION_FAILED') ||
-                        failure.errorText.includes('ERR_TUNNEL_CONNECTION_FAILED') ||
-                        failure.errorText.includes('ERR_HTTP_RESPONSE_CODE_FAILURE') ||
-                        failure.errorText.includes('ERR_PROXY_AUTH_UNSUPPORTED') ||
-                        failure.errorText.includes('ERR_AUTH_FAILED')
-                    )) {
-                        proxyAuthErrorCount++;
-                        console.log('Auth error count:', proxyAuthErrorCount);
-                        await removeProxy(proxy, 'uploads/proxy.txt');
-                        await browser.close();
-                        console.log('Auth error, closing browser');
-                        return;
-                    }
-                };
-
-                
-
-                // Set up event handlers
-                page.on('request', requestHandler);
-                page.on('error', errorHandler);
-                page.on('requestfailed', failedHandler);
-
-                // Set authentication
-                if (username && password) {
-                    try {
-                        await page.authenticate({ username, password });
-                    } catch (authError) {
-                        proxyAuthErrorCount++;
-                        console.log('Auth error count:', proxyAuthErrorCount);
-                        await removeProxy(proxy, 'uploads/proxy.txt');
-                        await browser.close();
-                        console.log('Auth error, closing browser');
-                        return;
-                    }
+            const requestHandler = request => {
+                if (!authenticated) {
+                    request.abort();
+                    return;
                 }
+                request.continue();
+            };
 
-                // Enable requests after authentication
-                authenticated = true;
-                await page.setUserAgent(getRandomChrome135UA());
-
-                // Add human-like behavior before navigation
-                await randomDelay(1000, 1500);
-                await moveMouseRandomly(page);
-
-                await page.goto(url, { 
-                    waitUntil: 'networkidle2',
-                    timeout: 60000 
-                }).catch(e => console.log('Initial navigation timeout, continuing anyway...'));
-
-                // First scroll
-                await randomDelay(800, 1200);
-                await humanScroll(page);
-
-                // check facebook address or not
-                const currentUrl = page.url();
-                const isFacebookUrl = currentUrl.includes('facebook.com') || 
-                         currentUrl.includes('fb.com') ||
-                         currentUrl.includes('fb.me');
-                if(isFacebookUrl) {
-                    await handleFacebookAddress(page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success);
-                }
-
-                // check iframe or not
-                const iframe = await page.evaluate(() => {
-                    const iframes = document.querySelectorAll('iframe');
-                    return iframes.length > 0;
-                });
-                
-                if(iframe) {
-                    await handleIframe(page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success);
-                }
-
-                // Clean up event listeners
-                page.off('request', requestHandler);
-                page.off('error', errorHandler);
-                page.off('requestfailed', failedHandler);
-                // page.off('response', responseHandler);
-
-            } catch (error) {
-                console.error('Session error:', error);
-                if (!success) {
+            const errorHandler = async err => {
+                if (err.message && err.message.includes('auth')) {
+                    proxyAuthErrorCount++;
+                    console.log('Auth error count:', proxyAuthErrorCount);
                     await removeProxy(proxy, 'uploads/proxy.txt');
                 }
-            } finally {
-                if (browser) {
-                    // Only remove proxy if the attempt wasn't successful
-                    if (!success) {
-                        await removeProxy(proxy, 'uploads/proxy.txt');
-                    }
+            };
+
+            const failedHandler = async request => {
+                const failure = request.failure();
+                if (failure && (
+                    failure.errorText.includes('ERR_PROXY_CONNECTION_FAILED') ||
+                    failure.errorText.includes('ERR_TUNNEL_CONNECTION_FAILED') ||
+                    failure.errorText.includes('ERR_HTTP_RESPONSE_CODE_FAILURE') ||
+                    failure.errorText.includes('ERR_PROXY_AUTH_UNSUPPORTED') ||
+                    failure.errorText.includes('ERR_AUTH_FAILED')
+                )) {
+                    proxyAuthErrorCount++;
+                    console.log('Auth error count:', proxyAuthErrorCount);
+                    await removeProxy(proxy, 'uploads/proxy.txt');
                     await browser.close();
+                    console.log('Auth error, closing browser');
+                    return;
+                }
+            };
+
+            // Set up event handlers
+            page.on('request', requestHandler);
+            page.on('error', errorHandler);
+            page.on('requestfailed', failedHandler);
+
+            // Set authentication
+            if (username && password) {
+                try {
+                    await page.authenticate({ username, password });
+                } catch (authError) {
+                    proxyAuthErrorCount++;
+                    console.log('Auth error count:', proxyAuthErrorCount);
+                    await removeProxy(proxy, 'uploads/proxy.txt');
+                    await browser.close();
+                    console.log('Auth error, closing browser');
+                    return;
                 }
             }
+
+            // Enable requests after authentication
+            authenticated = true;
+            await page.setUserAgent(getRandomChrome135UA());
+
+            // Add human-like behavior before navigation
+            await randomDelay(1000, 1500);
+            await moveMouseRandomly(page);
+
+            await page.goto(url, { 
+                waitUntil: 'networkidle2',
+                timeout: 60000 
+            }).catch(e => console.log('Initial navigation timeout, continuing anyway...'));
+
+            // First scroll
+            await randomDelay(800, 1200);
+            await humanScroll(page);
+
+            // check facebook address or not
+            const currentUrl = page.url();
+            const isFacebookUrl = currentUrl.includes('facebook.com') || 
+                     currentUrl.includes('fb.com') ||
+                     currentUrl.includes('fb.me');
+            if(isFacebookUrl) {
+                console.log('Facebook address found');
+                await handleFacebookAddress(page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success);
+            }
+
+            // check iframe or not
+            const iframe = await page.evaluate(() => {
+                const iframes = document.querySelectorAll('iframe');
+                return iframes.length > 0;
+            });
+            
+            if(iframe) {
+                console.log('Iframe found');
+                await handleIframe(page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success);
+            }
+
+            // Clean up event listeners
+            page.off('request', requestHandler);
+            page.off('error', errorHandler);
+            page.off('requestfailed', failedHandler);
+            // page.off('response', responseHandler);
+
+        } catch (error) {
+            console.error('Session error:', error);
+            if (!success) {
+                await removeProxy(proxy, 'uploads/proxy.txt');
+            }
+        } finally {
+            if (browser) {
+                await browser.close();
+            }
+            // Always remove the proxy from the file after use
+            await removeProxy(proxy, 'uploads/proxy.txt');
         }
     } catch (error) {
         console.error('Fatal error:', error);

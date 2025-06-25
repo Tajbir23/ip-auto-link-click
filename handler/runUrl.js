@@ -7,6 +7,7 @@ const workCountIncrease = require('./workCountIncrease');
 const handleIframe = require('./handleIframe');
 const handleFacebookAddress = require('./handleFacebookAddress');
 const isLoadingPage = require('./isLoadingPage');
+const UserAgent = require('user-agents');
 
 // Add a flag to control scraping
 let isScrapingActive = true;
@@ -16,19 +17,6 @@ let googleErrorCount = 0;
 // Function to stop scraping
 function stopScraping() {
     isScrapingActive = false;
-}
-
-function getRandomChrome135UA() {
-    // Windows 10 specific architectures and variations
-    const architectures = [
-        'Win64; x64',
-        'WOW64',
-        'Win64; Intel',
-        'Windows NT 10.0'
-    ];
-
-    const architecture = architectures[Math.floor(Math.random() * architectures.length)];
-    return `Mozilla/5.0 (Windows NT 10.0; ${architecture}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36`;
 }
 
 // Random delay between actions
@@ -195,7 +183,13 @@ const runUrl = async (url, proxy) => {
 
             // Enable requests after authentication
             authenticated = true;
-            await page.setUserAgent(getRandomChrome135UA());
+            // Use user-agents package for a random Chrome user agent
+            const userAgent = new UserAgent({
+                deviceCategory: 'desktop',
+                platform: 'Win32',
+                browserName: 'Chrome'
+            });
+            await page.setUserAgent(userAgent.toString());
 
             // Add human-like behavior before navigation
             await randomDelay(1000, 1500);

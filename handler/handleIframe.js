@@ -36,9 +36,7 @@ try {
     });
 
     if (linkClicked) {
-        await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
-        
-        // Check for Google detection immediately after navigation
+        // Check for Google detection immediately after navigation (if any)
         const isGoogle = await googleDetection(page);
         if(isGoogle) {
             googleErrorCount++;

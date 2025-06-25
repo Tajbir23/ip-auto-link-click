@@ -38,6 +38,7 @@ try {
     });
 
     if (linkClicked) {
+        console.log('linkClicked iframe');
         // await page.waitForNavigation({ waitUntil: 'networkidle0' });
         // Check for Google detection immediately after navigation (if any)
         const isGoogle = await googleDetection(page);
@@ -49,17 +50,21 @@ try {
             return;  // Exit this proxy attempt
         }
 
+        console.log('success iframe');
         success = true;
         
         // Final actions with remaining time
         await randomDelay(800, 1200);
         await humanScroll(page);
-        
-        // Random final delay to reach 5-7 seconds total
-        const remainingDelay = Math.floor(Math.random() * 2000) + 5000; // 5-7 seconds
-        await sleep(remainingDelay - 19000); // Subtract approximate time of previous actions
-        console.log('Remaining delay:', remainingDelay);
-        await workCountIncrease()
+
+        try {
+            console.log('Starting workCountIncrease...');
+            workCountIncrease();
+            console.log('workCountIncrease iframe');
+        } catch (error) {
+            console.error('Failed to increase work count:', error);
+        }
+
         await isLoadingPage(page);
     }
 } catch (error) {

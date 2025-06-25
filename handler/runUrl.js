@@ -35,6 +35,7 @@ function getRandomChrome135UA() {
 const randomDelay = async (min = 800, max = 1500) => {
     const delay = Math.floor(Math.random() * (max - min + 1)) + min;
     await new Promise(resolve => setTimeout(resolve, delay));
+    console.log('randomDelay', delay);
 };
 
 // Simulate human-like mouse movement

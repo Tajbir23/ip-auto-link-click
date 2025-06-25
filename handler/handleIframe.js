@@ -39,12 +39,25 @@ try {
 
     if (linkClicked) {
         console.log('linkClicked iframe');
-        // await page.waitForNavigation({ waitUntil: 'networkidle0' });
-        // Check for Google detection immediately after navigation (if any)
-        const isGoogle = await googleDetection(page);
-        if(isGoogle) {
+        
+        // Wait for navigation to complete
+        try {
+            await page.waitForNavigation({ 
+                waitUntil: ['networkidle0', 'domcontentloaded'],
+                timeout: 30000 
+            });
+        } catch (error) {
+            console.log('Navigation timeout, continuing with detection...');
+        }
+
+        // Wait a bit to ensure the page is stable
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Check for search engine detection
+        const isSearchEngine = await googleDetection(page);
+        if(isSearchEngine) {
             googleErrorCount++;
-            console.log('Google detection triggered. Error count:', googleErrorCount);
+            console.log('Search engine detection triggered. Error count:', googleErrorCount);
             success = false;  // Mark this attempt as unsuccessful
             await removeProxy(proxy, 'uploads/proxy.txt');
             return;  // Exit this proxy attempt

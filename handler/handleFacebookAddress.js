@@ -1,3 +1,5 @@
+const isLoadingPage = require("./isLoadingPage");
+
 const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success) => {
     let isLinkClicked = false;
     // Wait for the target div to appear
@@ -30,13 +32,24 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
     }
     
     if(isLinkClicked) {
-        await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+        // Wait for navigation to complete
+        try {
+            await page.waitForNavigation({ 
+                waitUntil: ['networkidle0', 'domcontentloaded'],
+                timeout: 30000 
+            });
+        } catch (error) {
+            console.log('Navigation timeout, continuing with detection...');
+        }
+
+        // Wait a bit to ensure the page is stable
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
-        // Check for Google detection immediately after navigation
-        const isGoogle = await googleDetection(page);
-        if(isGoogle) {
+        // Check for search engine detection
+        const isSearchEngine = await googleDetection(page);
+        if(isSearchEngine) {
             googleErrorCount++;
-            console.log('Google detection triggered. Error count:', googleErrorCount);
+            console.log('Search engine detection triggered. Error count:', googleErrorCount);
             success = false;  // Mark this attempt as unsuccessful
             await removeProxy(proxy, 'uploads/proxy.txt');
             return;  // Exit this proxy attempt
@@ -48,11 +61,8 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
         await randomDelay(800, 1200);
         await humanScroll(page);
         
-        // Random final delay to reach 5-7 seconds total
-        const remainingDelay = Math.floor(Math.random() * 2000) + 5000; // 5-7 seconds
-        await sleep(remainingDelay - 19000); // Subtract approximate time of previous actions
-        console.log('Remaining delay:', remainingDelay);
         await workCountIncrease()
+        await isLoadingPage(page);
     }
 }
 

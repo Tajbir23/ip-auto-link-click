@@ -7,7 +7,8 @@ const workCountIncrease = require('./workCountIncrease');
 const handleIframe = require('./handleIframe');
 const handleFacebookAddress = require('./handleFacebookAddress');
 const isLoadingPage = require('./isLoadingPage');
-const UserAgent = require('user-agents');
+const handleCaptcha = require('./handleCaptcha');
+const UserAgent = require('user-agents')
 
 // Add a flag to control scraping
 let isScrapingActive = true;
@@ -79,6 +80,7 @@ const runUrl = async (url, proxy) => {
             return;
         }
 
+        console.log('googleErrorCount', googleErrorCount);
         if(googleErrorCount >= 5) {
             googleErrorCount = 0;
             stopScraping();
@@ -89,6 +91,14 @@ const runUrl = async (url, proxy) => {
         console.log(proxy)
         let browser = null;
         let success = false;
+
+        // random user agent
+        const userAgent = new UserAgent({
+            deviceCategory: 'desktop',
+            platform: 'Win32'
+        }).toString();
+        console.log('Selected user agent:', userAgent);
+       
 
         try {
             browser = await puppeteer.launch({
@@ -112,16 +122,97 @@ const runUrl = async (url, proxy) => {
 
             // Mask webdriver
             await page.evaluateOnNewDocument(() => {
+                // Delete webdriver
                 delete navigator.__proto__.webdriver;
+                
+                // Override permissions
+                const originalQuery = window.navigator.permissions.query;
+                window.navigator.permissions.query = (parameters) => (
+                    parameters.name === 'notifications' ?
+                        Promise.resolve({ state: Notification.permission }) :
+                        originalQuery(parameters)
+                );
+
+                // Add plugins
                 Object.defineProperty(navigator, 'plugins', {
-                    get: () => [1, 2, 3, 4, 5]
+                    get: () => {
+                        return [
+                            {
+                                0: {type: "application/x-google-chrome-pdf"},
+                                description: "Portable Document Format",
+                                filename: "internal-pdf-viewer",
+                                length: 1,
+                                name: "Chrome PDF Plugin"
+                            },
+                            {
+                                0: {type: "application/pdf"},
+                                description: "Portable Document Format",
+                                filename: "internal-pdf-viewer",
+                                length: 1,
+                                name: "Chrome PDF Viewer"
+                            },
+                            {
+                                0: {type: "application/x-nacl"},
+                                description: "Native Client",
+                                filename: "internal-nacl-plugin",
+                                length: 1,
+                                name: "Native Client"
+                            }
+                        ];
+                    }
                 });
+
+                // Add languages
                 Object.defineProperty(navigator, 'languages', {
                     get: () => ['en-US', 'en']
                 });
+
+                // Add chrome runtime
                 window.chrome = {
-                    runtime: {}
+                    runtime: {
+                        connect: () => {},
+                        sendMessage: () => {},
+                        onMessage: {
+                            addListener: () => {},
+                            removeListener: () => {}
+                        }
+                    },
+                    webstore: {},
+                    app: {
+                        isInstalled: false,
+                        InstallState: {
+                            DISABLED: 'disabled',
+                            INSTALLED: 'installed',
+                            NOT_INSTALLED: 'not_installed'
+                        },
+                        RunningState: {
+                            CANNOT_RUN: 'cannot_run',
+                            READY_TO_RUN: 'ready_to_run',
+                            RUNNING: 'running'
+                        }
+                    }
                 };
+
+                // Override webgl vendor and renderer
+                const getParameter = WebGLRenderingContext.prototype.getParameter;
+                WebGLRenderingContext.prototype.getParameter = function(parameter) {
+                    if (parameter === 37445) {
+                        return 'Intel Inc.';
+                    }
+                    if (parameter === 37446) {
+                        return 'Intel Iris OpenGL Engine';
+                    }
+                    return getParameter.apply(this, [parameter]);
+                };
+            });
+
+            // Set additional headers to appear more like a real browser
+            await page.setExtraHTTPHeaders({
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                'Upgrade-Insecure-Requests': '1',
+                'Connection': 'keep-alive'
             });
 
             // Block all requests until authenticated
@@ -183,13 +274,8 @@ const runUrl = async (url, proxy) => {
 
             // Enable requests after authentication
             authenticated = true;
-            // Use user-agents package for a random Chrome user agent
-            const userAgent = new UserAgent({
-                deviceCategory: 'desktop',
-                platform: 'Win32',
-                browserName: 'Chrome'
-            });
-            await page.setUserAgent(userAgent.toString());
+            // Use user-agents package for a random user agent (no filters)
+            await page.setUserAgent(userAgent);
 
             // Add human-like behavior before navigation
             await randomDelay(1000, 1500);
@@ -202,6 +288,15 @@ const runUrl = async (url, proxy) => {
 
             await isLoadingPage(page);
             
+            // Check for captcha immediately after navigation
+            const hasCaptcha = await handleCaptcha(page);
+            if (hasCaptcha) {
+                console.log('Captcha detected and handled, waiting for page to stabilize...');
+                await isLoadingPage(page);
+                // Additional delay after captcha
+                await new Promise(resolve => setTimeout(resolve, 3000));
+            }
+
             // First scroll
             await randomDelay(800, 1200);
             await humanScroll(page);

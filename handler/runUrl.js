@@ -6,6 +6,7 @@ const googleDetection = require('./googleDetection');
 const workCountIncrease = require('./workCountIncrease');
 const handleIframe = require('./handleIframe');
 const handleFacebookAddress = require('./handleFacebookAddress');
+const isLoadingPage = require('./isLoadingPage');
 
 // Add a flag to control scraping
 let isScrapingActive = true;
@@ -204,6 +205,8 @@ const runUrl = async (url, proxy) => {
                 timeout: 60000 
             }).catch(e => console.log('Initial navigation timeout, continuing anyway...'));
 
+            await isLoadingPage(page);
+            
             // First scroll
             await randomDelay(800, 1200);
             await humanScroll(page);
@@ -229,6 +232,8 @@ const runUrl = async (url, proxy) => {
                 await handleIframe(page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success);
             }
 
+            
+
             // Clean up event listeners
             page.off('request', requestHandler);
             page.off('error', errorHandler);
@@ -242,6 +247,7 @@ const runUrl = async (url, proxy) => {
             }
         } finally {
             if (browser) {
+                await sleep(30000);
                 await browser.close();
             }
             // Always remove the proxy from the file after use

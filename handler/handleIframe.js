@@ -1,3 +1,5 @@
+const isLoadingPage = require("./isLoadingPage");
+
 const handleIframe = async (page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success) => {
 // Wait for iframes and interact
 await page.waitForSelector('iframe[src*="facebook.com/plugins/post.php"]');
@@ -36,6 +38,7 @@ try {
     });
 
     if (linkClicked) {
+        // await page.waitForNavigation({ waitUntil: 'networkidle0' });
         // Check for Google detection immediately after navigation (if any)
         const isGoogle = await googleDetection(page);
         if(isGoogle) {
@@ -57,6 +60,7 @@ try {
         await sleep(remainingDelay - 19000); // Subtract approximate time of previous actions
         console.log('Remaining delay:', remainingDelay);
         await workCountIncrease()
+        await isLoadingPage(page);
     }
 } catch (error) {
     console.log('Error interacting with iframe:', error.message);

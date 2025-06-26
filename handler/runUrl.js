@@ -1,4 +1,3 @@
-const fs = require('fs')
 const puppeteer = require('puppeteer')
 const removeProxy = require('./removeProxy');
 const removeProxyFile = require('./removeProxyFile');
@@ -13,84 +12,161 @@ const UserAgent = require('user-agents')
 // Add a flag to control scraping
 let isScrapingActive = true;
 let proxyAuthErrorCount = 0;
-let googleErrorCount = 0;
 
 // Function to stop scraping
 function stopScraping() {
     isScrapingActive = false;
 }
 
-// Random delay between actions
-const randomDelay = async (min = 800, max = 1500) => {
-    const delay = Math.floor(Math.random() * (max - min + 1)) + min;
-    await new Promise(resolve => setTimeout(resolve, delay));
-    console.log('randomDelay', delay);
-};
-
-// Simulate human-like mouse movement
+// Enhanced human-like mouse movement
 async function moveMouseRandomly(page) {
     const viewportSize = await page.viewport();
-    const x = Math.floor(Math.random() * viewportSize.width);
-    const y = Math.floor(Math.random() * viewportSize.height);
     
-    await page.mouse.move(x, y, { steps: 10 });
+    // Generate multiple points for natural movement
+    const points = [];
+    const numPoints = Math.floor(Math.random() * 3) + 2; // 2-4 points
+    
+    for (let i = 0; i < numPoints; i++) {
+        points.push({
+            x: Math.floor(Math.random() * viewportSize.width),
+            y: Math.floor(Math.random() * viewportSize.height)
+        });
+    }
+    
+    // Move through each point with natural acceleration/deceleration
+    for (const point of points) {
+        await page.mouse.move(point.x, point.y, {
+            steps: Math.floor(Math.random() * 20) + 20 // 20-40 steps for smooth movement
+        });
+        // Random pause between movements
+        await new Promise(r => setTimeout(r, Math.random() * 200 + 100));
+    }
 }
 
-
-// Simulate human-like scrolling with faster timing
+// Enhanced human-like scrolling
 async function humanScroll(page) {
     await page.evaluate(async () => {
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-        const height = document.documentElement.scrollHeight;
-        const scrollSteps = Math.floor(Math.random() * 3) + 2; // 2-4 steps
         
-        for (let i = 0; i < scrollSteps; i++) {
-            const position = (height / scrollSteps) * (i + 1);
-            window.scrollTo({
-                top: position,
-                behavior: 'smooth'
-            });
-            await delay(Math.random() * 500 + 300); // Faster scrolling
+        // Get total scroll height
+        const totalHeight = document.documentElement.scrollHeight;
+        const viewportHeight = window.innerHeight;
+        let currentPosition = 0;
+        
+        while (currentPosition < totalHeight) {
+            // Random scroll amount (between 100 and 400 pixels)
+            const scrollAmount = Math.floor(Math.random() * 300) + 100;
+            currentPosition += scrollAmount;
+            
+            // Smooth scroll with easing
+            const startTime = Date.now();
+            const startPosition = window.pageYOffset;
+            const duration = Math.random() * 500 + 500; // 500-1000ms
+            
+            const easeInOutQuad = (t) => {
+                return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+            };
+            
+            while (Date.now() - startTime < duration) {
+                const elapsed = Date.now() - startTime;
+                const progress = elapsed / duration;
+                const easedProgress = easeInOutQuad(progress);
+                const scrollPos = startPosition + (scrollAmount * easedProgress);
+                window.scrollTo(0, scrollPos);
+                await delay(16); // Roughly 60fps
+            }
+            
+            // Random pause between scrolls
+            await delay(Math.random() * 500 + 500);
+            
+            // Random small scroll up (20% chance)
+            if (Math.random() < 0.2) {
+                const upScroll = Math.floor(Math.random() * 100) + 50;
+                currentPosition -= upScroll;
+                window.scrollBy(0, -upScroll);
+                await delay(Math.random() * 300 + 200);
+            }
         }
     });
 }
 
+// Enhanced random delay with natural distribution
+async function randomDelay(min = 800, max = 1500) {
+    // Use normal distribution for more natural timing
+    const mean = (min + max) / 2;
+    const stdDev = (max - min) / 4;
+    
+    let delay;
+    do {
+        // Box-Muller transform for normal distribution
+        const u1 = Math.random();
+        const u2 = Math.random();
+        const z = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+        delay = Math.round(mean + stdDev * z);
+    } while (delay < min || delay > max);
+    
+    await new Promise(resolve => setTimeout(resolve, delay));
+    console.log('Natural delay:', delay);
+}
+
+// Add random keyboard behavior
+async function simulateKeyboardBehavior(page) {
+    // Random key presses (like accidental tab or arrow keys)
+    const keys = ['Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+    if (Math.random() < 0.3) { // 30% chance
+        const randomKey = keys[Math.floor(Math.random() * keys.length)];
+        await page.keyboard.press(randomKey);
+        await randomDelay(100, 300);
+    }
+}
+
+// Add random viewport resizing
+async function simulateViewportResize(page) {
+    if (Math.random() < 0.2) { // 20% chance
+        const width = 1920 + Math.floor(Math.random() * 100) - 50;
+        const height = 1080 + Math.floor(Math.random() * 100) - 50;
+        await page.setViewport({ width, height });
+        await randomDelay(200, 500);
+    }
+}
+
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-const runUrl = async (url, proxy) => {
+const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
     // Reset the flag when starting new scrape
     isScrapingActive = true;
+    let success = true;
+    let isGoogleDetected = false;
 
     try {
         if (!proxy) {
             console.log('No proxy provided');
-            return;
+            return { success: false, isGoogleDetected: false };
         }
 
         if(proxyAuthErrorCount >= 10) {
             await removeProxyFile()
             proxyAuthErrorCount = 0;
             stopScraping();
-            return;
+            return { success: false, isGoogleDetected: false };
         }
         
         // Check if scraping should stop
         if (!isScrapingActive) {
             console.log('Scraping stopped by user');
-            return;
+            return { success: false, isGoogleDetected: false };
         }
 
-        console.log('googleErrorCount', googleErrorCount);
-        if(googleErrorCount >= 5) {
-            googleErrorCount = 0;
+        console.log(`Browser ${browserId} - Current global Google error count: ${globalGoogleErrorCount}`);
+        if(globalGoogleErrorCount >= 5) {
             stopScraping();
-            return;
+            return { success: false, isGoogleDetected: false };
         }
         
         const [host, port, username, password] = proxy.split(':');
-        console.log(proxy)
+        console.log(`Browser ${browserId} using proxy:`, proxy)
         let browser = null;
-        let success = false;
+        let currentGoogleErrorCount = globalGoogleErrorCount || 0;
 
         // random user agent
         const userAgent = new UserAgent({
@@ -277,9 +353,11 @@ const runUrl = async (url, proxy) => {
             // Use user-agents package for a random user agent (no filters)
             await page.setUserAgent(userAgent);
 
-            // Add human-like behavior before navigation
-            await randomDelay(1000, 1500);
+            // Add more human-like behavior before navigation
+            await randomDelay(1000, 2000);
             await moveMouseRandomly(page);
+            await simulateKeyboardBehavior(page);
+            await simulateViewportResize(page);
 
             await page.goto(url, { 
                 waitUntil: 'networkidle2',
@@ -288,18 +366,17 @@ const runUrl = async (url, proxy) => {
 
             await isLoadingPage(page);
             
-            // Check for captcha immediately after navigation
-            const hasCaptcha = await handleCaptcha(page);
-            if (hasCaptcha) {
-                console.log('Captcha detected and handled, waiting for page to stabilize...');
-                await isLoadingPage(page);
-                // Additional delay after captcha
-                await new Promise(resolve => setTimeout(resolve, 3000));
-            }
+            // More natural behavior after page load
+            await randomDelay(800, 1500);
+            await moveMouseRandomly(page);
+            await simulateKeyboardBehavior(page);
+            
+            
 
-            // First scroll
-            await randomDelay(800, 1200);
+            // Natural scrolling behavior
+            await randomDelay(500, 1000);
             await humanScroll(page);
+            await simulateKeyboardBehavior(page);
 
             // check facebook address or not
             const currentUrl = page.url();
@@ -307,8 +384,16 @@ const runUrl = async (url, proxy) => {
                      currentUrl.includes('fb.com') ||
                      currentUrl.includes('fb.me');
             if(isFacebookUrl) {
-                console.log('Facebook address found');
-                await handleFacebookAddress(page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success);
+                console.log(`Browser ${browserId} - Facebook address found`);
+                const result = await handleFacebookAddress(page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, currentGoogleErrorCount, success, proxy);
+                if (result) {
+                    success = result.success;
+                    if (!result.success) {
+                        isGoogleDetected = true;
+                        console.log(`Browser ${browserId} - Google detected in Facebook handler`);
+                        return { success: false, isGoogleDetected: true };
+                    }
+                }
             }
 
             // check iframe or not
@@ -318,20 +403,54 @@ const runUrl = async (url, proxy) => {
             });
             
             if(iframe) {
-                console.log('Iframe found');
-                await handleIframe(page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success);
+                console.log(`Browser ${browserId} - Iframe found`);
+                const result = await handleIframe(page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, currentGoogleErrorCount, success, proxy);
+                if (result) {
+                    success = result.success;
+                    if (!result.success) {
+                        isGoogleDetected = true;
+                        console.log(`Browser ${browserId} - Google detected in iframe handler`);
+                        return { success: false, isGoogleDetected: true };
+                    }
+                }
             }
 
-            
+            // Check for captcha with natural timing
+            const hasCaptcha = await handleCaptcha(page);
+            if (hasCaptcha) {
+                console.log(`Browser ${browserId} - Captcha detected and handled, waiting naturally...`);
+                await randomDelay(2000, 4000);
+                await moveMouseRandomly(page);
+                await isLoadingPage(page);
+            }
+
+            // check google detection
+            const isGoogleDetection = await googleDetection(page);
+            if(isGoogleDetection) {
+                console.log(`Browser ${browserId} - Google detection found`);
+                isGoogleDetected = true;
+                return { success: false, isGoogleDetected: true };
+            }
+
+            // increase work count
+            if(success) {
+                try {
+                    console.log(`Browser ${browserId} - Starting workCountIncrease...`);
+                    workCountIncrease();
+                    console.log(`Browser ${browserId} - workCountIncrease completed`);
+                } catch (error) {
+                    console.error(`Browser ${browserId} - Failed to increase work count:`, error);
+                }
+            }
 
             // Clean up event listeners
             page.off('request', requestHandler);
             page.off('error', errorHandler);
             page.off('requestfailed', failedHandler);
-            // page.off('response', responseHandler);
 
         } catch (error) {
-            console.error('Session error:', error);
+            console.error(`Browser ${browserId} - Session error:`, error);
+            success = false;
             if (!success) {
                 await removeProxy(proxy, 'uploads/proxy.txt');
             }
@@ -346,6 +465,8 @@ const runUrl = async (url, proxy) => {
     } catch (error) {
         console.error('Fatal error:', error);
     }
+
+    return { success, isGoogleDetected };
 }
 
 module.exports = { runUrl, stopScraping }

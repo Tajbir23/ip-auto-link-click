@@ -1,6 +1,9 @@
 const fs = require('fs')
 const { runUrl } = require('./runUrl')
 
+// Shared state for all browser instances
+let globalGoogleErrorCount = 0;
+let activeBrowsers = new Set();
 
 const runWork = async (url) => {
     function delay(ms) {
@@ -16,13 +19,45 @@ const runWork = async (url) => {
     let active = [];
 
     while (index < proxies.length || active.length > 0) {
+        // Check if we should stop due to too many Google detections
+        console.log(`Current global Google error count: ${globalGoogleErrorCount}, Active browsers: ${activeBrowsers.size}`);
+        
+        if (globalGoogleErrorCount >= 5) {
+            console.log('Stopping all browsers due to too many Google detections');
+            globalGoogleErrorCount = 0;
+            activeBrowsers.clear();
+            // Close all active browsers
+            active = [];
+            return;
+        }
+
         // Fill up to BATCH_SIZE
         while (active.length < BATCH_SIZE && index < proxies.length) {
             const proxy = proxies[index++];
+            const browserId = `browser_${Date.now()}_${Math.random()}`;
+            activeBrowsers.add(browserId);
+            
             const startDelay = active.length === 0 ? 0 : (5000 + Math.random() * 2000);
-            const promise = delay(startDelay).then(() => runUrl(url, proxy)).then(() => {
+            const promise = delay(startDelay).then(async () => {
+                try {
+                    const result = await runUrl(url, proxy, globalGoogleErrorCount, browserId);
+                    if (result) {
+                        if (result.isGoogleDetected) {
+                            globalGoogleErrorCount++;
+                            console.log(`Browser ${browserId} detected Google. New global count: ${globalGoogleErrorCount}`);
+                        }
+                        if (!result.success) {
+                            activeBrowsers.delete(browserId);
+                        }
+                    }
+                } catch (error) {
+                    console.error(`Error in browser ${browserId}:`, error);
+                    activeBrowsers.delete(browserId);
+                }
+            }).then(() => {
                 // Remove finished promise from active
                 active = active.filter(p => p !== promise);
+                activeBrowsers.delete(browserId);
             });
             active.push(promise);
         }

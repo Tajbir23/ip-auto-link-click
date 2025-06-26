@@ -1,112 +1,181 @@
 async function googleDetection(page) {
-    console.log('Checking if page is a search engine page');
-    
+    let isGoogleDetection = false;
     try {
-        // Wait for the page to be fully loaded
-        await page.waitForFunction('document.readyState === "complete"', { timeout: 10000 });
-        
-        // Wait a bit to ensure dynamic content is loaded
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        const isSearchEngine = await page.evaluate(() => {
-            // Check URL first - more comprehensive checks
-            const currentUrl = window.location.href.toLowerCase();
-            const urlIndicators = [
-                'google.com/sorry',
-                'google.com/search',
-                'google.',
-                'bing.com',
-                'recaptcha',
-                '/sorry/index',
-                'consent.google'
+        // Helper function to check if a URL is Google-related
+        const isGoogleUrl = (url) => {
+            const googlePatterns = [
+                /google\.[a-z]+/i,
+                /google\.co\.[a-z]+/i,
+                /google\.com\.?[a-z]*/i,
+                /\/sorry\/index/i,
+                /gstatic\.com/i,
+                /googleusercontent\.com/i,
+                /google\/gen_204/i,
+                /google\/log/i
             ];
             
-            if (urlIndicators.some(indicator => currentUrl.includes(indicator))) {
-                console.log('Search engine detected via URL:', currentUrl);
+            return googlePatterns.some(pattern => pattern.test(url)) ||
+                   url.includes('google.') ||
+                   url.includes('Google');
+        };
+
+        // Create a promise that resolves when navigation occurs
+        const navigationPromise = new Promise(resolve => {
+            const urls = new Set();
+            
+            // Listen for all requests
+            page.on('request', request => {
+                const url = request.url();
+                urls.add(url);
+                
+                // Check if this request is to Google
+                if (isGoogleUrl(url)) {
+                    console.log('Google detected in request:', url);
+                    resolve(true);
+                    isGoogleDetection = true;
+                    return;
+                }
+            });
+
+            // Listen for responses
+            page.on('response', response => {
+                const url = response.url();
+                urls.add(url);
+                
+                // Check if this response is from Google
+                if (isGoogleUrl(url)) {
+                    console.log('Google detected in response:', url);
+                    resolve(true);
+                    isGoogleDetection = true;
+                    return;
+                }
+            });
+
+            // Listen for redirects
+            page.on('framenavigated', frame => {
+                const url = frame.url();
+                urls.add(url);
+                
+                // Check if this navigation is to Google
+                if (isGoogleUrl(url)) {
+                    console.log('Google detected in navigation:', url);
+                    resolve(true);
+                    isGoogleDetection = true;
+                    return;
+                }
+            });
+
+            // Set a timeout to resolve the promise
+            setTimeout(() => {
+                console.log('All URLs encountered:', Array.from(urls));
+                resolve(false);
+            }, 5000);
+        });
+
+        // Wait for either navigation events or timeout
+        const isGoogleNavigation = await navigationPromise;
+        if (isGoogleNavigation) {
+            isGoogleDetection = true;
+            return true;
+        }
+
+        // Get current URL
+        const url = await page.url();
+        console.log('Current URL:', url);
+        
+        // Check current URL
+        if (isGoogleUrl(url)) {
+            console.log('Google detected in current URL:', url);
+            isGoogleDetection = true;
+            return true;
+        }
+
+        // Get browser location
+        const location = await page.evaluate(() => window.location.href);
+        console.log('Browser location:', location);
+        
+        // Check browser location
+        if (isGoogleUrl(location)) {
+            console.log('Google detected in browser location:', location);
+            isGoogleDetection = true;
+            return true;
+        }
+
+        // Check page content for Google elements
+        const hasGoogleElements = await page.evaluate(() => {
+            // Check title
+            if (document.title.toLowerCase().includes('google')) {
                 return true;
             }
 
-            // Check for reCAPTCHA or verification page specific elements
-            const verificationIndicators = [
-                document.querySelector('.g-recaptcha'),
-                document.querySelector('form#captcha-form'),
-                document.querySelector('input[name="continue"]'),
-                document.querySelector('#recaptcha'),
-                document.querySelector('img[alt="captcha"]'),
-                document.querySelector('form[action*="/sorry/index"]')
-            ];
-
-            if (verificationIndicators.some(indicator => indicator)) {
-                console.log('Google verification/reCAPTCHA page detected');
-                return true;
+            // Check meta tags
+            const metas = document.getElementsByTagName('meta');
+            for (const meta of metas) {
+                const content = (meta.content || '').toLowerCase();
+                if (content.includes('google.') || content.includes('google')) {
+                    return true;
+                }
             }
 
-            // Check multiple Google-specific elements
+            // Check visible text
+            const bodyText = document.body.innerText.toLowerCase();
             const googleIndicators = [
-                // Main search box
-                document.querySelector('input[name="q"]'),
-                // Google logo
-                document.querySelector('img[alt="Google"]'),
-                // Search button
-                document.querySelector('input[value="Google Search"]'),
-                document.querySelector('button[aria-label="Google Search"]'),
-                // Results stats element
-                document.querySelector('#result-stats'),
-                // Search results container
-                document.querySelector('#search'),
-                document.querySelector('#rcnt'),
-                // Google's main content div
-                document.querySelector('#main'),
-                // Google's consent form
-                document.querySelector('form[action*="consent.google.com"]'),
-                // Additional Google indicators
-                document.querySelector('.google-logo'),
-                document.querySelector('#searchform')
+                'google search',
+                'google chrome',
+                'sorry... we have detected unusual traffic',
+                'our systems have detected unusual traffic',
+                'please try your request again',
+                'why did this happen?',
+                'ip address',
+                'automated requests'
             ];
+            
+            return googleIndicators.some(indicator => bodyText.includes(indicator.toLowerCase()));
+        });
 
-            // Check Bing-specific elements
-            const bingIndicators = [
-                // Bing search box
-                document.querySelector('#sb_form_q'),
-                // Bing logo
-                document.querySelector('.b_logo'),
-                // Bing results container
-                document.querySelector('#b_results'),
-                // Bing header
-                document.querySelector('#b_header'),
-                // Additional Bing indicators
-                document.querySelector('#b_content'),
-                document.querySelector('.b_searchbox'),
-                document.querySelector('#b_tween')
-            ];
+        if (hasGoogleElements) {
+            console.log('Google elements found in page content');
+            isGoogleDetection = true;
+            return true;
+        }
 
-            // Check if any indicators are found
-            const hasGoogleIndicators = googleIndicators.some(indicator => indicator);
-            const hasBingIndicators = bingIndicators.some(indicator => indicator);
-
-            if (hasGoogleIndicators) {
-                console.log('Google indicators found');
+        // Check for specific Google elements
+        const hasGoogleUI = await page.evaluate(() => {
+            // Check for Google's reCAPTCHA
+            if (document.querySelector('iframe[src*="recaptcha"]') ||
+                document.querySelector('div.g-recaptcha')) {
                 return true;
             }
-            if (hasBingIndicators) {
-                console.log('Bing indicators found');
+
+            // Check for Google's sorry page elements
+            if (document.querySelector('form#captcha-form') ||
+                document.querySelector('a[href*="google.com/sorry"]')) {
+                return true;
+            }
+
+            // Check for Google search elements
+            if (document.querySelector('input[name="q"]') ||
+                document.querySelector('div#searchform')) {
                 return true;
             }
 
             return false;
         });
 
-        if (isSearchEngine) {
-            console.log('Detected search engine page');
-        } else {
-            console.log('No search engine detected');
+        if (hasGoogleUI) {
+            console.log('Google UI elements detected');
+            isGoogleDetection = true;
+            return true;
         }
 
-        return isSearchEngine;
+        console.log('No Google indicators detected');
+        isGoogleDetection = false;
+        return isGoogleDetection;
+
     } catch (error) {
-        console.error('Error in search engine detection:', error.message);
-        // If there's an error, we assume it's not a search engine page
-        return false;
+        console.error('Error in Google detection:', error);
+        // If there's an error, return true to be safe
+        return true;
     }
 }
 

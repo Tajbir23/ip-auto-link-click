@@ -21,7 +21,12 @@ async function handleCaptcha(page) {
                 document.querySelector('form[action*="/sorry/index"]'),
                 // Additional verification elements
                 document.querySelector('iframe[name*="c-"]'),
-                document.querySelector('div[style*="z-index: 2000000000"]')
+                document.querySelector('div[style*="z-index: 2000000000"]'),
+                // Additional captcha indicators
+                document.querySelector('div[class*="captcha"]'),
+                document.querySelector('div[id*="captcha"]'),
+                document.querySelector('iframe[src*="captcha"]'),
+                document.querySelector('div[aria-label*="challenge"]')
             ];
 
             return captchaIndicators.some(indicator => indicator);
@@ -34,7 +39,7 @@ async function handleCaptcha(page) {
 
         console.log('reCAPTCHA detected, waiting for frames to load...');
 
-        // Wait for reCAPTCHA iframe to be ready
+        // Wait for reCAPTCHA iframe to be ready with increased timeout
         await page.waitForFunction(() => {
             const frames = document.querySelectorAll('iframe');
             return Array.from(frames).some(frame => 
@@ -42,7 +47,7 @@ async function handleCaptcha(page) {
                 frame.title.includes('recaptcha') ||
                 frame.name.startsWith('c-')
             );
-        }, { timeout: 5000 }).catch(() => console.log('Timeout waiting for reCAPTCHA frames'));
+        }, { timeout: 10000 }).catch(() => console.log('Timeout waiting for reCAPTCHA frames'));
 
         // Get all frames
         const frames = await page.frames();
@@ -66,35 +71,72 @@ async function handleCaptcha(page) {
         if (hasCheckbox) {
             console.log('Checkbox reCAPTCHA found, attempting to click...');
             await recaptchaFrame.click('.recaptcha-checkbox').catch(() => console.log('Failed to click checkbox'));
+            
+            // Wait longer for the challenge frame
+            await new Promise(resolve => setTimeout(resolve, 3000));
         }
 
-        // Wait for potential challenge frame
-        await page.waitForFunction(() => {
+        // Wait for challenge frame with increased timeout
+        const challengeFrame = await page.waitForFunction(() => {
             const frames = document.querySelectorAll('iframe');
-            return Array.from(frames).some(frame => 
+            return Array.from(frames).find(frame => 
                 frame.src.includes('bframe') || 
                 (frame.title && frame.title.includes('challenge'))
             );
-        }, { timeout: 5000 }).catch(() => console.log('No challenge frame appeared'));
+        }, { timeout: 10000 }).catch(() => {
+            console.log('No challenge frame appeared');
+            return null;
+        });
 
-        // Give some time for the challenge to load if it appears
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        if (challengeFrame) {
+            console.log('Challenge frame detected, human intervention required');
+            // Wait for human to solve the challenge
+            await new Promise(resolve => setTimeout(resolve, 30000));
+            
+            // Check if the challenge was solved
+            const isSolved = await page.evaluate(() => {
+                const successIndicators = [
+                    document.querySelector('.recaptcha-success'),
+                    document.querySelector('[aria-label="You are verified"]'),
+                    !document.querySelector('.recaptcha-checkbox-unchecked'),
+                    document.querySelector('.recaptcha-checkbox-checked')
+                ];
+                return successIndicators.some(indicator => indicator);
+            });
 
-        // Check if verification button exists and try to click it
-        const hasVerifyButton = await page.evaluate(() => {
-            const verifyButton = document.querySelector('#recaptcha-verify-button') || 
-                               document.querySelector('button[type="submit"]');
-            if (verifyButton) {
-                verifyButton.click();
+            if (isSolved) {
+                console.log('Challenge appears to be solved');
+                await isLoadingPage(page);
                 return true;
+            }
+        }
+
+        // Check for verification button with expanded selectors
+        const hasVerifyButton = await page.evaluate(() => {
+            const verifySelectors = [
+                '#recaptcha-verify-button',
+                'button[type="submit"]',
+                'input[type="submit"]',
+                'button[class*="verify"]',
+                'button[class*="submit"]'
+            ];
+            
+            for (const selector of verifySelectors) {
+                const button = document.querySelector(selector);
+                if (button) {
+                    console.log('Found verify button:', selector);
+                    button.click();
+                    return true;
+                }
             }
             return false;
         });
 
         if (hasVerifyButton) {
             console.log('Clicked verify button');
-            // Wait for navigation or page changes
             await isLoadingPage(page);
+            // Wait a bit longer after verification
+            await new Promise(resolve => setTimeout(resolve, 3000));
         }
 
         // Return true to indicate captcha was detected and handled

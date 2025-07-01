@@ -81,7 +81,7 @@ async function googleDetection(page) {
 
         // Get current URL
         const url = await page.url();
-        console.log('Current URL:', url);
+        // console.log('Current URL:', url);
         
         // Check current URL
         if (isGoogleUrl(url)) {

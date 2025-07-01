@@ -1,3 +1,4 @@
+const findAds = require("./findAds");
 const isLoadingPage = require("./isLoadingPage");
 
 const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success, proxy) => {
@@ -133,6 +134,7 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
                         await newPage.waitForFunction('document.readyState === "complete"');
                         // wait for 5 seconds
                         await new Promise(resolve => setTimeout(resolve, 5000));
+                        await findAds(newPage);
                         // await newPage.close();
                     }
                 } catch (error) {

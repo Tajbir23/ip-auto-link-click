@@ -7,7 +7,8 @@ const handleIframe = require('./handleIframe');
 const handleFacebookAddress = require('./handleFacebookAddress');
 const isLoadingPage = require('./isLoadingPage');
 const handleCaptcha = require('./handleCaptcha');
-const UserAgent = require('user-agents')
+const UserAgent = require('user-agents');
+const findAds = require('./findAds');
 
 // Add a flag to control scraping
 let isScrapingActive = true;
@@ -157,14 +158,14 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             return { success: false, isGoogleDetected: false };
         }
 
-        console.log(`Browser ${browserId} - Current global Google error count: ${globalGoogleErrorCount}`);
+        // console.log(`Browser ${browserId} - Current global Google error count: ${globalGoogleErrorCount}`);
         if(globalGoogleErrorCount >= 5) {
             stopScraping();
             return { success: false, isGoogleDetected: false };
         }
         
         const [host, port, username, password] = proxy.split(':');
-        console.log(`Browser ${browserId} using proxy:`, proxy)
+        // console.log(`Browser ${browserId} using proxy:`, proxy)
         let browser = null;
         let currentGoogleErrorCount = globalGoogleErrorCount || 0;
 
@@ -173,7 +174,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             deviceCategory: 'desktop',
             platform: 'Win32'
         }).toString();
-        console.log('Selected user agent:', userAgent);
+        // console.log('Selected user agent:', userAgent);
        
 
         try {
@@ -374,9 +375,9 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             
 
             // Natural scrolling behavior
-            await randomDelay(500, 1000);
-            await humanScroll(page);
-            await simulateKeyboardBehavior(page);
+            // await randomDelay(500, 1000);
+            // await humanScroll(page);
+            // await simulateKeyboardBehavior(page);
 
             // check facebook address or not
             const currentUrl = page.url();
@@ -384,13 +385,13 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
                      currentUrl.includes('fb.com') ||
                      currentUrl.includes('fb.me');
             if(isFacebookUrl) {
-                console.log(`Browser ${browserId} - Facebook address found`);
+                // console.log(`Browser ${browserId} - Facebook address found`);
                 const result = await handleFacebookAddress(page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, currentGoogleErrorCount, success, proxy);
                 if (result) {
                     success = result.success;
                     if (!result.success) {
                         isGoogleDetected = true;
-                        console.log(`Browser ${browserId} - Google detected in Facebook handler`);
+                        // console.log(`Browser ${browserId} - Google detected in Facebook handler`);
                         return { success: false, isGoogleDetected: true };
                     }
                 }
@@ -443,6 +444,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
                 }
             }
 
+            
             // Clean up event listeners
             page.off('request', requestHandler);
             page.off('error', errorHandler);

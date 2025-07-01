@@ -144,7 +144,7 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
                         await newPage.waitForFunction('document.readyState === "complete"');
                         // wait for 5 seconds
                         await new Promise(resolve => setTimeout(resolve, 5000));
-                        await newPage.close();
+                        // await newPage.close();
                     }
                 } catch (error) {
                     console.log('Error checking target:', error.message);

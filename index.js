@@ -68,7 +68,7 @@ app.get('/resume-scrape', (req, res) => {
 })
 
 app.post('/resume-scrape', async(req, res) => {
-    await runUrl(req.body.url)
+    await runWork(req.body.url)
     res.redirect('/')
 })
 

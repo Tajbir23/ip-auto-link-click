@@ -83,11 +83,14 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
             if (isGoogle) {
                 console.log('Google detected through target monitoring');
                 googleErrorCount++;
-                success = false;
-                if (proxy) {
-                    await removeProxy(proxy, 'uploads/proxy.txt');
-                }
-                return { success: false, googleErrorCount };
+                // success = false;
+                // if (proxy) {
+                //     await removeProxy(proxy, 'uploads/proxy.txt');
+                // }
+                // return { success: false, googleErrorCount };
+            }else{
+                console.log('No Google detected, proceeding with success');
+                googleErrorCount = 0;
             }
 
             // Additional check with googleDetection on main page
@@ -95,11 +98,14 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
             if (mainPageIsGoogle) {
                 console.log('Google detected through googleDetection');
                 googleErrorCount++;
-                success = false;
-                if (proxy) {
-                    await removeProxy(proxy, 'uploads/proxy.txt');
-                }
-                return { success: false, googleErrorCount };
+                // success = false;
+                // if (proxy) {
+                //     await removeProxy(proxy, 'uploads/proxy.txt');
+                // }
+                // return { success: false, googleErrorCount };
+            }else{
+                console.log('No Google detected, proceeding with success');
+                googleErrorCount = 0;
             }
 
             // Check any new pages that were opened
@@ -112,13 +118,21 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
                         if (isGooglePage) {
                             console.log('Google detected in new page');
                             googleErrorCount++;
-                            success = false;
-                            if (proxy) {
-                                await removeProxy(proxy, 'uploads/proxy.txt');
-                            }
-                            await newPage.close();
-                            return { success: false, googleErrorCount };
+                            console.log('google detect in facebook address');
+                            // success = false;
+                            // if (proxy) {
+                            //     await removeProxy(proxy, 'uploads/proxy.txt');
+                            // }
+                            // await newPage.close();
+                            // return { success: false, googleErrorCount };
+                        }else{
+                            console.log('No Google detected, proceeding with success');
+                            googleErrorCount = 0;
                         }
+                        // wait for complete load
+                        await newPage.waitForFunction('document.readyState === "complete"');
+                        // wait for 5 seconds
+                        await new Promise(resolve => setTimeout(resolve, 5000));
                         await newPage.close();
                     }
                 } catch (error) {

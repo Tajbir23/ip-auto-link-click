@@ -91,11 +91,14 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
             if (isGoogle) {
                 console.log('Google detected through target monitoring');
                 googleErrorCount++;
-                success = false;
-                if (proxy) {
-                    await removeProxy(proxy, 'uploads/proxy.txt');
-                }
-                return { success: false, googleErrorCount };
+                // success = false;
+                // if (proxy) {
+                //     await removeProxy(proxy, 'uploads/proxy.txt');
+                // }
+                // return { success: false, googleErrorCount };
+            }else{
+                console.log('No Google detected, proceeding with success');
+                googleErrorCount = 0;
             }
 
             console.log('Checking main page for Google');
@@ -105,11 +108,14 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
                 console.log('Google detected through googleDetection');
                 googleErrorCount++;
                 console.log('googleErrorCount', googleErrorCount);
-                success = false;
-                if (proxy) {
-                    await removeProxy(proxy, 'uploads/proxy.txt');
-                }
-                return { success: false, googleErrorCount };
+                // success = false;
+                // if (proxy) {
+                //     await removeProxy(proxy, 'uploads/proxy.txt');
+                // }
+                // return { success: false, googleErrorCount };
+            }else{
+                console.log('No Google detected, proceeding with success');
+                googleErrorCount = 0;
             }
 
             // Check any new pages that were opened
@@ -123,13 +129,21 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
                             console.log('Google detected in new page');
                             googleErrorCount++;
                             console.log('googleErrorCount', googleErrorCount);
-                            success = false;
-                            if (proxy) {
-                                await removeProxy(proxy, 'uploads/proxy.txt');
-                            }
-                            await newPage.close();
-                            return { success: false, googleErrorCount };
+                            // success = false;
+                            // if (proxy) {
+                            //     await removeProxy(proxy, 'uploads/proxy.txt');
+                            // }
+                            // await newPage.close();
+                            // return { success: false, googleErrorCount };
+                        }else{
+                            console.log('No Google detected, proceeding with success');
+                            googleErrorCount = 0;
                         }
+                        console.log('closing new page');
+                        // wait for complete load
+                        await newPage.waitForFunction('document.readyState === "complete"');
+                        // wait for 5 seconds
+                        await new Promise(resolve => setTimeout(resolve, 5000));
                         await newPage.close();
                     }
                 } catch (error) {

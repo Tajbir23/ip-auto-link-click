@@ -1,5 +1,4 @@
-const { PuppeteerBlocker } = require("@cliqz/adblocker-puppeteer");
-const { default: fetch } = require("cross-fetch");
+
 
 const findAds = async (page) => {
     console.log('findAds');

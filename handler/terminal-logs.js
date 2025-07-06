@@ -23,7 +23,7 @@ const terminalLogs = async(req, res) => {
             res.json({ logs: [] });
         }
     } catch (error) {
-        logger.error('Error reading terminal logs:', error);
+        logger.error(`terminal-logs.js 26 line - Error reading terminal logs: ${error}`);
         res.status(500).json({ error: 'Error reading logs' });
     }
 }

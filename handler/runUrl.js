@@ -9,6 +9,7 @@ const isLoadingPage = require('./isLoadingPage');
 const handleCaptcha = require('./handleCaptcha');
 const UserAgent = require('user-agents');
 const findAds = require('./findAds');
+const logger = require('./logger');
 
 // Add a flag to control scraping
 let isScrapingActive = true;
@@ -107,7 +108,7 @@ async function randomDelay(min = 800, max = 1500) {
     } while (delay < min || delay > max);
     
     await new Promise(resolve => setTimeout(resolve, delay));
-    console.log('Natural delay:', delay);
+    logger.info(`runUrl.js 111 line - Natural delay: ${delay}`);
 }
 
 // Add random keyboard behavior
@@ -141,7 +142,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
 
     try {
         if (!proxy) {
-            console.log('No proxy provided');
+            logger.error('runUrl.js 145 line - No proxy provided');
             return { success: false, isGoogleDetected: false };
         }
 
@@ -154,18 +155,18 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
         
         // Check if scraping should stop
         if (!isScrapingActive) {
-            console.log('Scraping stopped by user');
+            logger.info('runUrl.js 158 line - Scraping stopped by user');
             return { success: false, isGoogleDetected: false };
         }
 
-        // console.log(`Browser ${browserId} - Current global Google error count: ${globalGoogleErrorCount}`);
+        
         if(globalGoogleErrorCount >= 5) {
             stopScraping();
             return { success: false, isGoogleDetected: false };
         }
         
         const [host, port, username, password] = proxy.split(':');
-        // console.log(`Browser ${browserId} using proxy:`, proxy)
+        
         let browser = null;
         let currentGoogleErrorCount = globalGoogleErrorCount || 0;
 
@@ -174,7 +175,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             deviceCategory: 'desktop',
             platform: 'Win32'
         }).toString();
-        // console.log('Selected user agent:', userAgent);
+        
        
 
         try {
@@ -307,7 +308,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             const errorHandler = async err => {
                 if (err.message && err.message.includes('auth')) {
                     proxyAuthErrorCount++;
-                    console.log('Auth error count:', proxyAuthErrorCount);
+                    logger.info(`runUrl.js 311 line - Auth error count: ${proxyAuthErrorCount}`);
                     await removeProxy(proxy, 'uploads/proxy.txt');
                 }
             };
@@ -322,10 +323,10 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
                     failure.errorText.includes('ERR_AUTH_FAILED')
                 )) {
                     proxyAuthErrorCount++;
-                    console.log('Auth error count:', proxyAuthErrorCount);
+                    logger.info(`runUrl.js 326 line - Auth error count: ${proxyAuthErrorCount}`);
                     await removeProxy(proxy, 'uploads/proxy.txt');
                     await browser.close();
-                    console.log('Auth error, closing browser');
+                    logger.info('runUrl.js 329 line - Auth error, closing browser');
                     return;
                 }
             };
@@ -341,10 +342,10 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
                     await page.authenticate({ username, password });
                 } catch (authError) {
                     proxyAuthErrorCount++;
-                    console.log('Auth error count:', proxyAuthErrorCount);
+                    logger.info(`runUrl.js 345 line - Auth error count: ${proxyAuthErrorCount}`);
                     await removeProxy(proxy, 'uploads/proxy.txt');
                     await browser.close();
-                    console.log('Auth error, closing browser');
+                    logger.info('runUrl.js 348 line - Auth error, closing browser');
                     return;
                 }
             }
@@ -363,7 +364,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             await page.goto(url, { 
                 waitUntil: 'networkidle2',
                 timeout: 60000 
-            }).catch(e => console.log('Initial navigation timeout, continuing anyway...'));
+            }).catch(e => logger.error(`runUrl.js 367 line - Initial navigation timeout: ${e}`));
 
             await isLoadingPage(page);
             
@@ -385,13 +386,13 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
                      currentUrl.includes('fb.com') ||
                      currentUrl.includes('fb.me');
             if(isFacebookUrl) {
-                // console.log(`Browser ${browserId} - Facebook address found`);
+                
                 const result = await handleFacebookAddress(page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, currentGoogleErrorCount, success, proxy);
                 if (result) {
                     success = result.success;
                     if (!result.success) {
                         isGoogleDetected = true;
-                        // console.log(`Browser ${browserId} - Google detected in Facebook handler`);
+                        
                         return { success: false, isGoogleDetected: true };
                     }
                 }
@@ -404,13 +405,13 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             });
             
             if(iframe) {
-                console.log(`Browser ${browserId} - Iframe found`);
+                logger.info(`runUrl.js 408 line - Browser ${browserId} - Iframe found`);
                 const result = await handleIframe(page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, currentGoogleErrorCount, success, proxy);
                 if (result) {
                     success = result.success;
                     if (!result.success) {
                         isGoogleDetected = true;
-                        console.log(`Browser ${browserId} - Google detected in iframe handler`);
+                        logger.info(`runUrl.js 414 line - Browser ${browserId} - Google detected in iframe handler`);
                         return { success: false, isGoogleDetected: true };
                     }
                 }
@@ -419,7 +420,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             // Check for captcha with natural timing
             const hasCaptcha = await handleCaptcha(page);
             if (hasCaptcha) {
-                console.log(`Browser ${browserId} - Captcha detected and handled, waiting naturally...`);
+                logger.info(`runUrl.js 422 line - Browser ${browserId} - Captcha detected and handled, waiting naturally...`);
                 await randomDelay(2000, 4000);
                 await moveMouseRandomly(page);
                 await isLoadingPage(page);
@@ -428,7 +429,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             // check google detection
             const isGoogleDetection = await googleDetection(page);
             if(isGoogleDetection) {
-                console.log(`Browser ${browserId} - Google detection found`);
+                logger.info(`runUrl.js 431 line - Browser ${browserId} - Google detection found`);
                 isGoogleDetected = true;
                 return { success: false, isGoogleDetected: true };
             }
@@ -436,11 +437,11 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             // increase work count
             if(success) {
                 try {
-                    console.log(`Browser ${browserId} - Starting workCountIncrease...`);
+                    logger.info(`runUrl.js 439 line - Browser ${browserId} - Starting workCountIncrease...`);
                     workCountIncrease();
-                    console.log(`Browser ${browserId} - workCountIncrease completed`);
+                    logger.info(`runUrl.js 441 line - Browser ${browserId} - workCountIncrease completed`);
                 } catch (error) {
-                    console.error(`Browser ${browserId} - Failed to increase work count:`, error);
+                    logger.error(`runUrl.js 443 line - Browser ${browserId} - Failed to increase work count: ${error}`);
                 }
             }
 
@@ -451,7 +452,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             page.off('requestfailed', failedHandler);
 
         } catch (error) {
-            console.error(`Browser ${browserId} - Session error:`, error);
+            logger.error(`runUrl.js 455 line - Browser ${browserId} - Session error: ${error}`);
             success = false;
             if (!success) {
                 await removeProxy(proxy, 'uploads/proxy.txt');
@@ -465,7 +466,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             await removeProxy(proxy, 'uploads/proxy.txt');
         }
     } catch (error) {
-        console.error('Fatal error:', error);
+        logger.error(`runUrl.js 468 line - Fatal error: ${error}`);
     }
 
     return { success, isGoogleDetected };

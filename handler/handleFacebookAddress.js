@@ -16,12 +16,11 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
         const allTargets = new Set();
         const targetCreatedPromise = new Promise(resolve => {
             context.on('targetcreated', async (target) => {
-                console.log('New target created:', target.url());
                 allTargets.add(target);
                 
                 // Check if target URL is Google
                 if (target.url().includes('google.') || target.url().match(/google\.[a-z]+/)) {
-                    console.log('Google detected in new target:', target.url());
+                    logger.info(`handleFacebookAddress.js 23 line - Google detected in new target: ${target.url()}`);
                     resolve(true);
                 }
             });
@@ -30,11 +29,11 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
         // Track all target changes
         const targetChangedPromise = new Promise(resolve => {
             context.on('targetchanged', async (target) => {
-                console.log('Target changed:', target.url());
+                logger.info(`handleFacebookAddress.js 32 line - Target changed: ${target.url()}`);
                 
                 // Check if target URL is Google
                 if (target.url().includes('google.') || target.url().match(/google\.[a-z]+/)) {
-                    console.log('Google detected in target change:', target.url());
+                    logger.info(`handleFacebookAddress.js 35 line - Google detected in target change: ${target.url()}`);
                     resolve(true);
                 }
             });
@@ -53,7 +52,7 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
             if (randomDelay) await randomDelay(300, 700);
 
             // Click the random link
-            console.log('Clicking link:', randomLink.href);
+            logger.info(`handleFacebookAddress.js 55 line - Clicking link: ${randomLink.href}`);
             isLinkClicked = await frameHandle.evaluate((url) => {
                 const anchor = Array.from(document.querySelectorAll('div.x1iorvi4.xjkvuk6.x1g0dm76.xpdmqnj a[href]')).find(a => a.href === url);
                 if (anchor) {
@@ -64,12 +63,12 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
             }, randomLink.href);
 
         } else {
-            console.log('No links found in the target Facebook post div.');
+            logger.info('handleFacebookAddress.js 66 line - No links found in the target Facebook post div.');
             return { success: false, googleErrorCount };
         }
         
         if(isLinkClicked) {
-            console.log('Link clicked in Facebook post');
+            logger.info('handleFacebookAddress.js 71 line - Link clicked in Facebook post');
 
             // Wait for either target events or timeout
             const timeout = new Promise(resolve => setTimeout(() => resolve(false), 10000));
@@ -80,11 +79,11 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
             ]);
 
             // Log all targets we've seen
-            console.log('All targets encountered:', Array.from(allTargets).map(t => t.url()));
+            logger.info(`handleFacebookAddress.js 82 line - All targets encountered: ${Array.from(allTargets).map(t => t.url())}`);
 
             // If Google was detected through target monitoring
             if (isGoogle) {
-                console.log('Google detected through target monitoring');
+                logger.info('handleFacebookAddress.js 85 line - Google detected through target monitoring');
                 googleErrorCount++;
                 // success = false;
                 // if (proxy) {
@@ -92,14 +91,14 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
                 // }
                 // return { success: false, googleErrorCount };
             }else{
-                console.log('No Google detected, proceeding with success');
+                logger.info('handleFacebookAddress.js 94 line - No Google detected, proceeding with success');
                 googleErrorCount = 0;
             }
 
             // Additional check with googleDetection on main page
             const mainPageIsGoogle = await googleDetection(page);
             if (mainPageIsGoogle) {
-                console.log('Google detected through googleDetection');
+                logger.info('handleFacebookAddress.js 101 line - Google detected through googleDetection');
                 googleErrorCount++;
                 // success = false;
                 // if (proxy) {
@@ -107,7 +106,7 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
                 // }
                 // return { success: false, googleErrorCount };
             }else{
-                console.log('No Google detected, proceeding with success');
+                logger.info('handleFacebookAddress.js 108 line - No Google detected, proceeding with success');
                 googleErrorCount = 0;
             }
 
@@ -116,12 +115,12 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
                 try {
                     const newPage = await target.page();
                     if (newPage) {
-                        console.log('Checking new page:', await newPage.url());
+                        logger.info(`handleFacebookAddress.js 120 line - Checking new page: ${await newPage.url()}`);
                         const isGooglePage = await googleDetection(newPage);
                         if (isGooglePage) {
-                            console.log('Google detected in new page');
+                            logger.info('handleFacebookAddress.js 123 line - Google detected in new page');
                             googleErrorCount++;
-                            console.log('google detect in facebook address');
+                            logger.info('handleFacebookAddress.js 125 line - google detect in facebook address');
                             // success = false;
                             // if (proxy) {
                             //     await removeProxy(proxy, 'uploads/proxy.txt');
@@ -129,7 +128,7 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
                             // await newPage.close();
                             // return { success: false, googleErrorCount };
                         }else{
-                            console.log('No Google detected, proceeding with success');
+                            logger.info('handleFacebookAddress.js 134 line - No Google detected, proceeding with success');
                             googleErrorCount = 0;
                         }
                         // wait for complete load
@@ -140,11 +139,11 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
                         // await newPage.close();
                     }
                 } catch (error) {
-                    console.log('Error checking target:', error.message);
+                    logger.error('Error checking target:', error.message);
                 }
             }
 
-            console.log('No Google detected, proceeding with success');
+            logger.info('handleFacebookAddress.js 147 line - No Google detected, proceeding with success');
             success = true;
             
             // Continue with remaining actions
@@ -154,7 +153,7 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
             await isLoadingPage(page);
         }
     } catch (error) {
-        console.log('Error in handleFacebookAddress:', error.message);
+        logger.error(`handleFacebookAddress.js 156 line - Error in handleFacebookAddress: ${error.message}`);
         return { success: false, googleErrorCount };
     }
 

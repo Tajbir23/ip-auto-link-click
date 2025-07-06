@@ -2,14 +2,14 @@ const logger = require("./logger");
 
 
 const findAds = async (page) => {
-    logger.info('findAds');
+    logger.info('findAds.js 11 line - findAds');
     try {
 
 
         // wait for document ready state complete
         await page.waitForFunction('document.readyState === "complete"');
 
-        logger.info('document ready state complete');
+        logger.info('findAds.js 12 line - document ready state complete');
 
         // Query all probable ad links
         const adLinks = await page.evaluate(() => {
@@ -38,7 +38,7 @@ const findAds = async (page) => {
                     }
                 });
             });
-            logger.info('uniqueLinks', uniqueLinks);
+            logger.info(`findAds.js 41 line - uniqueLinks: ${uniqueLinks}`);
             // Return as array
             return Array.from(uniqueLinks).map(a => a.href);
         });
@@ -57,12 +57,12 @@ const findAds = async (page) => {
             if (link) link.click();
         }, adLink);
 
-        logger.info('adLink', adLink);
+        logger.info(`findAds.js 59 line - adLink: ${adLink}`);
         return adLink; // For logging/debug
 
     } catch (error) {
-        logger.error(error.message);
-        logger.error(error);
+        logger.error(`findAds.js 64 line - Error in findAds: ${error.message}`);
+        logger.error(`findAds.js 65 line - Error in findAds: ${error}`);
     }
 }
 

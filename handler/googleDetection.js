@@ -1,3 +1,5 @@
+const logger = require("./logger");
+
 async function googleDetection(page) {
     let isGoogleDetection = false;
     try {
@@ -30,7 +32,7 @@ async function googleDetection(page) {
                 
                 // Check if this request is to Google
                 if (isGoogleUrl(url)) {
-                    console.log('Google detected in request:', url);
+                    logger.info(`googleDetection.js 35 line - Google detected in request: ${url}`);
                     resolve(true);
                     isGoogleDetection = true;
                     return;
@@ -44,7 +46,7 @@ async function googleDetection(page) {
                 
                 // Check if this response is from Google
                 if (isGoogleUrl(url)) {
-                    console.log('Google detected in response:', url);
+                    logger.info(`googleDetection.js 48 line - Google detected in response: ${url}`);
                     resolve(true);
                     isGoogleDetection = true;
                     return;
@@ -58,7 +60,7 @@ async function googleDetection(page) {
                 
                 // Check if this navigation is to Google
                 if (isGoogleUrl(url)) {
-                    console.log('Google detected in navigation:', url);
+                    logger.info(`googleDetection.js 63 line - Google detected in navigation: ${url}`);
                     resolve(true);
                     isGoogleDetection = true;
                     return;
@@ -67,7 +69,7 @@ async function googleDetection(page) {
 
             // Set a timeout to resolve the promise
             setTimeout(() => {
-                console.log('All URLs encountered:', Array.from(urls));
+                logger.info(`googleDetection.js 72 line - All URLs encountered: ${Array.from(urls)}`);
                 resolve(false);
             }, 5000);
         });
@@ -81,22 +83,22 @@ async function googleDetection(page) {
 
         // Get current URL
         const url = await page.url();
-        // console.log('Current URL:', url);
+        
         
         // Check current URL
         if (isGoogleUrl(url)) {
-            console.log('Google detected in current URL:', url);
+            logger.info(`googleDetection.js 89 line - Google detected in current URL: ${url}`);
             isGoogleDetection = true;
             return true;
         }
 
         // Get browser location
         const location = await page.evaluate(() => window.location.href);
-        console.log('Browser location:', location);
+        logger.info(`googleDetection.js 97 line - Browser location: ${location}`);
         
         // Check browser location
         if (isGoogleUrl(location)) {
-            console.log('Google detected in browser location:', location);
+            logger.info(`googleDetection.js 101 line - Google detected in browser location: ${location}`);
             isGoogleDetection = true;
             return true;
         }
@@ -138,7 +140,7 @@ async function googleDetection(page) {
         });
 
         if (hasGoogleElements) {
-            console.log('Google elements found in page content');
+            logger.info('googleDetection.js 143 line - Google elements found in page content');
             isGoogleDetection = true;
             return true;
         }
@@ -167,17 +169,17 @@ async function googleDetection(page) {
         });
 
         if (hasGoogleUI) {
-            console.log('Google UI elements detected');
+            logger.info('googleDetection.js 172 line - Google UI elements detected');
             isGoogleDetection = true;
             return true;
         }
 
-        console.log('No Google indicators detected');
+        logger.info('googleDetection.js 177 line - No Google indicators detected');
         isGoogleDetection = false;
         return isGoogleDetection;
 
     } catch (error) {
-        console.error('Error in Google detection:', error);
+        logger.error(`googleDetection.js 182 line - Error in Google detection: ${error}`);
         // If there's an error, return true to be safe
         return true;
     }

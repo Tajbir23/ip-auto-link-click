@@ -61,7 +61,7 @@ app.get('/stop-scrape', (req, res) => {
 })
 
 app.post('/stop-scrape', async(req, res) => {
-    logger.info('Stopping scrape process...');
+    logger.info('index.js 64 line - Stopping scrape process...');
     stopScraping();
     res.redirect('/');
 })
@@ -108,20 +108,20 @@ findAvailablePort(3000, (PORT) => {
             const { execSync } = require('child_process');
             
             // Check for updates from git
-            logger.info('Checking for updates...');
+            logger.info('index.js 111 line - Checking for updates...');
             try {
                 // Fetch latest changes
                 execSync('git fetch', { stdio: 'inherit' });
                 
                 // Get current branch name
                 const currentBranch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
-                logger.info(`Current branch: ${currentBranch}`);
+                logger.info(`index.js 118 line - Current branch: ${currentBranch}`);
                 
                 // Check if we're behind the remote
                 const behindCount = execSync(`git rev-list HEAD..origin/${currentBranch} --count`).toString().trim();
                 
                 if (parseInt(behindCount) > 0) {
-                    logger.info('Updates found, attempting to merge...');
+                    logger.info('index.js 124 line - Updates found, attempting to merge...');
                     
                     try {
                         // Try to merge with auto-stash and theirs strategy
@@ -133,35 +133,34 @@ findAvailablePort(3000, (PORT) => {
                         try {
                             execSync('git stash pop', { stdio: 'inherit' });
                         } catch (stashError) {
-                            logger.warn('Note: Stashed changes could not be applied, but update succeeded');
+                            logger.warn('index.js 136 line - Note: Stashed changes could not be applied, but update succeeded');
                         }
                         
                         // Install dependencies
-                        logger.info('Installing dependencies...');
+                        logger.info('index.js 139 line - Installing dependencies...');
                         execSync('npm install', { stdio: 'inherit' });
                         
-                        logger.info('Successfully updated, merged changes, and installed dependencies');
+                        logger.info('index.js 142 line - Successfully updated, merged changes, and installed dependencies');
                     } catch (mergeError) {
-                        logger.error('Error during merge: ' + mergeError.message);
+                        logger.error('index.js 145 line - Error during merge: ' + mergeError.message);
                         // Attempt to abort any pending merge
                         try {
                             execSync('git merge --abort', { stdio: 'inherit' });
                         } catch (abortError) {
                             // Ignore abort errors
                         }
-                        logger.warn('Merge aborted. Please resolve conflicts manually');
+                        logger.warn('index.js 153 line - Merge aborted. Please resolve conflicts manually');
                     }
                 } else {
-                    logger.info('Already up to date');
+                    logger.info('index.js 156 line - Already up to date');
                 }
             } catch (error) {
-                logger.error('Error during git operations: ' + error.message);
+                logger.error('index.js 159 line - Error during git operations: ' + error.message);
             }
             
-            console.log(`Server is running on http://localhost:${PORT}`);
-            logger.info(`Server is running on http://localhost:${PORT}`);
+            logger.info(`index.js 162 line - Server is running on http://localhost:${PORT}`);
         } catch (error) {
-            logger.error('Error during update check: ' + error.message);
+            logger.error('index.js 165 line - Error during update check: ' + error.message);
         }
     });
 });

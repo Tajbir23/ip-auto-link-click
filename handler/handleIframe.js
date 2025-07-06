@@ -1,5 +1,6 @@
 const findAds = require("./findAds");
 const isLoadingPage = require("./isLoadingPage");
+const logger = require("./logger");
 
 const handleIframe = async (page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success, proxy) => {
     // Wait for iframes and interact
@@ -12,13 +13,13 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
     // Wait for the iframe's content to be fully loaded
     const frameHandle = await selectedFrame.contentFrame();
     if (!frameHandle) {
-        console.log('Could not access iframe content');
+        logger.error('handleIframe.js 15 line - Could not access iframe content');
         return { success: false, googleErrorCount };
     }
 
     // Wait for the iframe's DOM to be fully loaded
     await frameHandle.waitForFunction('document.readyState === "complete"');
-    console.log('Iframe loaded');
+    logger.info('handleIframe.js 22 line - Iframe loaded');
 
     try {
         await frameHandle.waitForSelector('[data-testid="post_message"]', { timeout: 10000 });
@@ -33,12 +34,12 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
         const allTargets = new Set();
         const targetCreatedPromise = new Promise(resolve => {
             context.on('targetcreated', async (target) => {
-                console.log('New target created:', target.url());
+                logger.info(`handleIframe.js 37 line - New target created: ${target.url()}`);
                 allTargets.add(target);
                 
                 // Check if target URL is Google
                 if (target.url().includes('google.') || target.url().match(/google\.[a-z]+/)) {
-                    console.log('Google detected in new target:', target.url());
+                    logger.info(`handleIframe.js 42 line - Google detected in new target: ${target.url()}`);
                     resolve(true);
                 }
             });
@@ -47,11 +48,11 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
         // Track all target changes
         const targetChangedPromise = new Promise(resolve => {
             context.on('targetchanged', async (target) => {
-                console.log('Target changed:', target.url());
+                logger.info(`handleIframe.js 51 line - Target changed: ${target.url()}`);
                 
                 // Check if target URL is Google
                 if (target.url().includes('google.') || target.url().match(/google\.[a-z]+/)) {
-                    console.log('Google detected in target change:', target.url());
+                    logger.info(`handleIframe.js 54 line - Google detected in target change: ${target.url()}`);
                     resolve(true);
                 }
             });
@@ -67,7 +68,7 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
                 const randomLink = links[Math.floor(Math.random() * links.length)];
                 // Store the href for logging
                 const href = randomLink.href;
-                console.log('Clicking link:', href);
+                logger.info(`handleIframe.js 71 line - Clicking link: ${href}`);
                 randomLink.click();
                 return true;
             }
@@ -75,7 +76,7 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
         });
 
         if (linkClicked) {
-            console.log('Link clicked in iframe');
+            logger.info('handleIframe.js 79 line - Link clicked in iframe');
 
             // Wait for either target events or timeout
             const timeout = new Promise(resolve => setTimeout(() => resolve(false), 10000));
@@ -86,11 +87,11 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
             ]);
 
             // Log all targets we've seen
-            console.log('All targets encountered:', Array.from(allTargets).map(t => t.url()));
+            logger.info(`handleIframe.js 89 line - All targets encountered: ${Array.from(allTargets).map(t => t.url())}`);
 
             // If Google was detected
             if (isGoogle) {
-                console.log('Google detected through target monitoring');
+                logger.info('handleIframe.js 93 line - Google detected through target monitoring');
                 googleErrorCount++;
                 // success = false;
                 // if (proxy) {
@@ -98,24 +99,24 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
                 // }
                 // return { success: false, googleErrorCount };
             }else{
-                console.log('No Google detected, proceeding with success');
+                logger.info('handleIframe.js 102 line - No Google detected, proceeding with success');
                 googleErrorCount = 0;
             }
 
-            console.log('Checking main page for Google');
+            logger.info('handleIframe.js 105 line - Checking main page for Google');
             // Additional check with googleDetection
             const mainPageIsGoogle = await googleDetection(page);
             if (mainPageIsGoogle) {
-                console.log('Google detected through googleDetection');
+                logger.info('handleIframe.js 110 line - Google detected through googleDetection');
                 googleErrorCount++;
-                console.log('googleErrorCount', googleErrorCount);
+                logger.info(`handleIframe.js 112 line - googleErrorCount: ${googleErrorCount}`);
                 // success = false;
                 // if (proxy) {
                 //     await removeProxy(proxy, 'uploads/proxy.txt');
                 // }
                 // return { success: false, googleErrorCount };
             }else{
-                console.log('No Google detected, proceeding with success');
+                logger.info('handleIframe.js 116 line - No Google detected, proceeding with success');
                 googleErrorCount = 0;
             }
 
@@ -124,12 +125,12 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
                 try {
                     const newPage = await target.page();
                     if (newPage) {
-                        console.log('Checking new page:', await newPage.url());
+                        logger.info(`handleIframe.js 128 line - Checking new page: ${await newPage.url()}`);
                         const isGooglePage = await googleDetection(newPage);
                         if (isGooglePage) {
-                            console.log('Google detected in new page');
+                            logger.info('handleIframe.js 131 line - Google detected in new page');
                             googleErrorCount++;
-                            console.log('googleErrorCount', googleErrorCount);
+                            logger.info(`handleIframe.js 133 line - googleErrorCount: ${googleErrorCount}`);
                             // success = false;
                             // if (proxy) {
                             //     await removeProxy(proxy, 'uploads/proxy.txt');
@@ -137,10 +138,10 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
                             // await newPage.close();
                             // return { success: false, googleErrorCount };
                         }else{
-                            console.log('No Google detected, proceeding with success');
+                            logger.info('handleIframe.js 141 line - No Google detected, proceeding with success');
                             googleErrorCount = 0;
                         }
-                        console.log('closing new page');
+                        logger.info('handleIframe.js 144 line - closing new page');
                         // wait for complete load
                         await newPage.waitForFunction('document.readyState === "complete"');
                         await findAds(newPage);
@@ -149,11 +150,11 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
                         // await newPage.close();
                     }
                 } catch (error) {
-                    console.log('Error checking target:', error.message);
+                    logger.error(`handleIframe.js 153 line - Error checking target: ${error.message}`);
                 }
             }
 
-            console.log('No Google detected, proceeding with success');
+            logger.info('handleIframe.js 157 line - No Google detected, proceeding with success');
             success = true;
             
             // Continue with remaining actions
@@ -163,7 +164,7 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
             await isLoadingPage(page);
         }
     } catch (error) {
-        console.log('Error interacting with iframe:', error.message);
+        logger.error(`handleIframe.js 168 line - Error interacting with iframe: ${error.message}`);
         return { success: false, googleErrorCount };
     }
 

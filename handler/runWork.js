@@ -21,10 +21,10 @@ const runWork = async (url) => {
 
     while (index < proxies.length || active.length > 0) {
         // Check if we should stop due to too many Google detections
-        logger.info(`Current global Google error count: ${globalGoogleErrorCount}, Active browsers: ${activeBrowsers.size}`);
+        logger.info(`runWork.js 24 line - Current global Google error count: ${globalGoogleErrorCount}, Active browsers: ${activeBrowsers.size}`);
         
         if (globalGoogleErrorCount >= 5) {
-            logger.warn('Stopping all browsers due to too many Google detections');
+            logger.warn('runWork.js 27 line - Stopping all browsers due to too many Google detections');
             globalGoogleErrorCount = 0;
             activeBrowsers.clear();
             // Close all active browsers
@@ -45,14 +45,14 @@ const runWork = async (url) => {
                     if (result) {
                         if (result.isGoogleDetected) {
                             globalGoogleErrorCount++;
-                            logger.warn(`Browser ${browserId} detected Google. New global count: ${globalGoogleErrorCount}`);
+                            logger.warn(`runWork.js 48 line - Browser ${browserId} detected Google. New global count: ${globalGoogleErrorCount}`);
                         }
                         if (!result.success) {
                             activeBrowsers.delete(browserId);
                         }
                     }
                 } catch (error) {
-                    logger.error(`Error in browser ${browserId}: ${error.message}`);
+                    logger.error(`runWork.js 55 line - Error in browser ${browserId}: ${error.message}`);
                     activeBrowsers.delete(browserId);
                 }
             }).then(() => {

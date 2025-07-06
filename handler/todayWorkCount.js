@@ -8,13 +8,13 @@ const todayWorkCount = async () => {
         const today = new Date().toISOString().split('T')[0]
         return workCount[today]?.count || 0
     } catch (error) {
-        logger.error('Error reading workCount.json:', error)
+        logger.error(`todayWorkCount.js 12 line - Error reading workCount.json: ${error}`)
         try {
             // Create file if it doesn't exist
             fs.writeFileSync('workCount.json', JSON.stringify({}))
             return 0
         } catch (error) {
-            logger.error('Error writing to workCount.json:', error)
+            logger.error(`todayWorkCount.js 18 line - Error writing to workCount.json: ${error}`)
             return 0
         }
     }

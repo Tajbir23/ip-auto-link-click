@@ -69,7 +69,7 @@ const checkLogs = async (req, res) => {
             endTime: endTime || ''
         })
     } catch (error) {
-        logger.error('Error reading logs:', error)
+        logger.error(`checkLogs.js 72 line - Error reading logs: ${error}`)
         res.status(500).send('Error reading logs')
     }
 }

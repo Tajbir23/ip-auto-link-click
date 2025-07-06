@@ -3,7 +3,7 @@ const logger = require('./logger');
 
 async function handleCaptcha(page) {
     try {
-        logger.info('Checking for reCAPTCHA...');
+        logger.info('handleCaptcha.js 6 line - Checking for reCAPTCHA...');
         
         // Check if reCAPTCHA is present
         const hasCaptcha = await page.evaluate(() => {
@@ -34,11 +34,11 @@ async function handleCaptcha(page) {
         });
 
         if (!hasCaptcha) {
-            logger.info('No reCAPTCHA detected');
+            logger.info('handleCaptcha.js 37 line - No reCAPTCHA detected');
             return false;
         }
 
-        logger.info('reCAPTCHA detected, waiting for frames to load...');
+        logger.info('handleCaptcha.js 41 line - reCAPTCHA detected, waiting for frames to load...');
 
         // Wait for reCAPTCHA iframe to be ready with increased timeout
         await page.waitForFunction(() => {
@@ -48,7 +48,7 @@ async function handleCaptcha(page) {
                 frame.title.includes('recaptcha') ||
                 frame.name.startsWith('c-')
             );
-        }, { timeout: 10000 }).catch(() => logger.info('Timeout waiting for reCAPTCHA frames'));
+        }, { timeout: 10000 }).catch(() => logger.info('handleCaptcha.js 51 line - Timeout waiting for reCAPTCHA frames'));
 
         // Get all frames
         const frames = await page.frames();
@@ -58,11 +58,11 @@ async function handleCaptcha(page) {
         );
 
         if (!recaptchaFrame) {
-            logger.info('Could not find reCAPTCHA frame');
+            logger.info('handleCaptcha.js 61 line - Could not find reCAPTCHA frame');
             return false;
         }
 
-        logger.info('Found reCAPTCHA frame, checking type...');
+        logger.info('handleCaptcha.js 65 line - Found reCAPTCHA frame, checking type...');
 
         // Check if it's a checkbox reCAPTCHA
         const hasCheckbox = await recaptchaFrame.evaluate(() => {
@@ -70,8 +70,8 @@ async function handleCaptcha(page) {
         }).catch(() => false);
 
         if (hasCheckbox) {
-            logger.info('Checkbox reCAPTCHA found, attempting to click...');
-            await recaptchaFrame.click('.recaptcha-checkbox').catch(() => logger.info('Failed to click checkbox'));
+            logger.info('handleCaptcha.js 73 line - Checkbox reCAPTCHA found, attempting to click...');
+            await recaptchaFrame.click('.recaptcha-checkbox').catch(() => logger.info('handleCaptcha.js 74 line - Failed to click checkbox'));
             
             // Wait longer for the challenge frame
             await new Promise(resolve => setTimeout(resolve, 3000));
@@ -85,12 +85,12 @@ async function handleCaptcha(page) {
                 (frame.title && frame.title.includes('challenge'))
             );
         }, { timeout: 10000 }).catch(() => {
-            logger.info('No challenge frame appeared');
+            logger.info('handleCaptcha.js 88 line - No challenge frame appeared');
             return null;
         });
 
         if (challengeFrame) {
-            logger.info('Challenge frame detected, human intervention required');
+            logger.info('handleCaptcha.js 93 line - Challenge frame detected, human intervention required');
             // Wait for human to solve the challenge
             await new Promise(resolve => setTimeout(resolve, 30000));
             
@@ -106,7 +106,7 @@ async function handleCaptcha(page) {
             });
 
             if (isSolved) {
-                logger.info('Challenge appears to be solved');
+                logger.info('handleCaptcha.js 109 line - Challenge appears to be solved');
                 await isLoadingPage(page);
                 return true;
             }
@@ -125,7 +125,7 @@ async function handleCaptcha(page) {
             for (const selector of verifySelectors) {
                 const button = document.querySelector(selector);
                 if (button) {
-                    logger.info('Found verify button:', selector);
+                    logger.info(`handleCaptcha.js 128 line - Found verify button: ${selector}`);
                     button.click();
                     return true;
                 }
@@ -134,7 +134,7 @@ async function handleCaptcha(page) {
         });
 
         if (hasVerifyButton) {
-                logger.info('Clicked verify button');
+            logger.info('handleCaptcha.js 139 line - Clicked verify button');
             await isLoadingPage(page);
             // Wait a bit longer after verification
             await new Promise(resolve => setTimeout(resolve, 3000));
@@ -144,7 +144,7 @@ async function handleCaptcha(page) {
         return true;
 
     } catch (error) {
-        logger.error('Error handling reCAPTCHA:', error.message);
+        logger.error(`handleCaptcha.js 149 line - Error handling reCAPTCHA: ${error.message}`);
         return false;
     }
 }

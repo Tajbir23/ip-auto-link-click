@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Viewer</title>
+    <style>
+        :root {
+            --bg-color: #1e1e1e;
+            --text-color: #d4d4d4;
+            --info-color: #6796e6;
+            --warn-color: #dcdcaa;
+            --error-color: #f44747;
+            --header-bg: #252526;
+            --select-bg: #37373d;
+            --select-text: #ffffff;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .terminal {
+            background-color: var(--bg-color);
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background-color: var(--header-bg);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-label {
+            color: var(--text-color);
+            font-size: 0.9em;
+        }
+
+        select {
+            background-color: var(--select-bg);
+            color: var(--select-text);
+            border: 1px solid #444;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        select:hover {
+            background-color: #3c3c3c;
+        }
+
+        input[type="time"] {
+            background-color: var(--select-bg);
+            color: var(--select-text);
+            border: 1px solid #444;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+        }
+
+        .clear-filters {
+            background-color: var(--error-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9em;
+        }
+
+        .clear-filters:hover {
+            background-color: #d93e3e;
+        }
+
+        .filter-summary {
+            color: var(--text-color);
+            font-size: 0.9em;
+            padding: 10px 15px;
+            background-color: var(--header-bg);
+            border-bottom: 1px solid #333;
+        }
+
+        .highlight {
+            color: var(--info-color);
+            font-weight: bold;
+        }
+
+        .terminal-body {
+            padding: 15px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            font-family: 'Consolas', 'Monaco', monospace;
+            margin: 4px 0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            word-wrap: break-word;
+        }
+
+        .log-entry:hover {
+            background-color: #2a2a2a;
+        }
+
+        .timestamp {
+            color: #569cd6;
+            margin-right: 10px;
+        }
+
+        .level {
+            display: inline-block;
+            min-width: 60px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .level-INFO {
+            color: var(--info-color);
+        }
+
+        .level-WARN {
+            color: var(--warn-color);
+        }
+
+        .level-ERROR {
+            color: var(--error-color);
+        }
+
+        .message {
+            color: var(--text-color);
+        }
+
+        .no-logs {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Auto-refresh toggle */
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-color);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--info-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="filters">
+                <div class="filter-group">
+                    <span class="filter-label">Date:</span>
+                    <select id="dateFilter" onchange="updateLogs()">
+                        <% dates.forEach(date => { %>
+                            <option value="<%= date %>" <%= date === selectedDate ? 'selected' : '' %>><%= date %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Level:</span>
+                    <select id="levelFilter" onchange="updateLogs()">
+                        <option value="ALL" <%= selectedLevel === 'ALL' ? 'selected' : '' %>>All Levels</option>
+                        <option value="ERROR" <%= selectedLevel === 'ERROR' ? 'selected' : '' %>>Error</option>
+                        <option value="WARN" <%= selectedLevel === 'WARN' ? 'selected' : '' %>>Warning</option>
+                        <option value="INFO" <%= selectedLevel === 'INFO' ? 'selected' : '' %>>Info</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Time Range:</span>
+                    <input type="time" id="startTime" value="<%= startTime %>" onchange="updateLogs()">
+                    <span class="filter-label">to</span>
+                    <input type="time" id="endTime" value="<%= endTime %>" onchange="updateLogs()">
+                </div>
+                <button class="clear-filters" onclick="clearFilters()">Clear Filters</button>
+            </div>
+            <div class="auto-refresh">
+                <span>Auto-refresh</span>
+                <label class="switch">
+                    <input type="checkbox" id="autoRefresh">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        <div class="filter-summary">
+            Showing <span class="highlight"><%= selectedLevel === 'ALL' ? 'all' : selectedLevel.toLowerCase() %></span> logs 
+            for <span class="highlight"><%= selectedDate %></span>
+            <% if (startTime && endTime) { %>
+                between <span class="highlight"><%= startTime %></span> and <span class="highlight"><%= endTime %></span>
+            <% } %>
+            (<span class="highlight"><%= logs.length %></span> entries)
+        </div>
+        <div class="terminal-body" id="logsContainer">
+            <% if (logs.length === 0) { %>
+                <div class="no-logs">No logs found for the selected filters</div>
+            <% } else { %>
+                <% logs.forEach(log => { %>
+                    <div class="log-entry">
+                        <span class="timestamp">[<%= log.timestamp %>]</span>
+                        <span class="level level-<%= log.level %>">[<%= log.level %>]</span>
+                        <span class="message"><%= log.message %></span>
+                    </div>
+                <% }) %>
+            <% } %>
+        </div>
+    </div>
+
+    <script>
+        function updateLogs() {
+            const date = document.getElementById('dateFilter').value;
+            const level = document.getElementById('levelFilter').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            
+            let url = `/logs?date=${date}&level=${level}`;
+            if (startTime && endTime) {
+                url += `&startTime=${startTime}&endTime=${endTime}`;
+            }
+            window.location.href = url;
+        }
+
+        function clearFilters() {
+            const today = new Date().toISOString().split('T')[0];
+            window.location.href = `/logs?date=${today}&level=ERROR`;
+        }
+
+        // Auto-refresh functionality
+        let refreshInterval;
+        const autoRefreshToggle = document.getElementById('autoRefresh');
+        const logsContainer = document.getElementById('logsContainer');
+
+        autoRefreshToggle.addEventListener('change', function() {
+            if (this.checked) {
+                refreshInterval = setInterval(refreshLogs, 5000);
+            } else {
+                clearInterval(refreshInterval);
+            }
+        });
+
+        async function refreshLogs() {
+            const date = document.getElementById('dateFilter').value;
+            const level = document.getElementById('levelFilter').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            
+            let url = `/logs?date=${date}&level=${level}`;
+            if (startTime && endTime) {
+                url += `&startTime=${startTime}&endTime=${endTime}`;
+            }
+            
+            const response = await fetch(url);
+            const text = await response.text();
+            
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+            const newLogsContainer = doc.getElementById('logsContainer');
+            
+            if (newLogsContainer) {
+                logsContainer.innerHTML = newLogsContainer.innerHTML;
+                scrollToBottom();
+            }
+        }
+
+        function scrollToBottom() {
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        // Initial scroll to bottom
+        scrollToBottom();
+    </script>
+</body>
+</html>

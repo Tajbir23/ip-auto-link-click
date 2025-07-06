@@ -1,5 +1,6 @@
 const fs = require('fs')
 const { runUrl } = require('./runUrl')
+const logger = require('./logger')
 
 // Shared state for all browser instances
 let globalGoogleErrorCount = 0;
@@ -20,10 +21,10 @@ const runWork = async (url) => {
 
     while (index < proxies.length || active.length > 0) {
         // Check if we should stop due to too many Google detections
-        console.log(`Current global Google error count: ${globalGoogleErrorCount}, Active browsers: ${activeBrowsers.size}`);
+        logger.info(`Current global Google error count: ${globalGoogleErrorCount}, Active browsers: ${activeBrowsers.size}`);
         
         if (globalGoogleErrorCount >= 5) {
-            console.log('Stopping all browsers due to too many Google detections');
+            logger.warn('Stopping all browsers due to too many Google detections');
             globalGoogleErrorCount = 0;
             activeBrowsers.clear();
             // Close all active browsers
@@ -44,14 +45,14 @@ const runWork = async (url) => {
                     if (result) {
                         if (result.isGoogleDetected) {
                             globalGoogleErrorCount++;
-                            console.log(`Browser ${browserId} detected Google. New global count: ${globalGoogleErrorCount}`);
+                            logger.warn(`Browser ${browserId} detected Google. New global count: ${globalGoogleErrorCount}`);
                         }
                         if (!result.success) {
                             activeBrowsers.delete(browserId);
                         }
                     }
                 } catch (error) {
-                    console.error(`Error in browser ${browserId}:`, error);
+                    logger.error(`Error in browser ${browserId}: ${error.message}`);
                     activeBrowsers.delete(browserId);
                 }
             }).then(() => {

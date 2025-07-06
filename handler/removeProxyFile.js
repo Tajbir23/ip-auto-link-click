@@ -1,13 +1,12 @@
 const fs = require('fs')
-const removeProxyFile = (filePath = "uploads/proxy.txt") => {
-    if(fs.existsSync(filePath)){
-        fs.unlink(filePath, (err) => {
-            if(err) console.log(err)
-            console.log(`${filePath} has been deleted`)
-        })
-    }else{
-        console.log(`${filePath} does not exist`)
-    }
+const logger = require('./logger')
+
+const removeProxyFile = async () => {
+    const filePath = 'uploads/proxy.txt'
+    fs.unlink(filePath, (err) => {
+        if(err) logger.error('Error removing proxy file:', err)
+        else logger.info(`${filePath} has been deleted`)
+    })
 }
 
 module.exports = removeProxyFile

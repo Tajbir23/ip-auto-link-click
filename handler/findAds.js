@@ -1,15 +1,16 @@
+const logger = require("./logger");
 
 
 const findAds = async (page) => {
-    console.log('findAds');
+    logger.info('findAds');
     try {
 
 
         // wait for document ready state complete
         await page.waitForFunction('document.readyState === "complete"');
 
-        
-        console.log('document ready state complete');
+        logger.info('document ready state complete');
+
         // Query all probable ad links
         const adLinks = await page.evaluate(() => {
             // All selectors for possible ads
@@ -37,8 +38,7 @@ const findAds = async (page) => {
                     }
                 });
             });
-            console.log('--------------------------------')
-            console.log('uniqueLinks', uniqueLinks);
+            logger.info('uniqueLinks', uniqueLinks);
             // Return as array
             return Array.from(uniqueLinks).map(a => a.href);
         });
@@ -57,11 +57,12 @@ const findAds = async (page) => {
             if (link) link.click();
         }, adLink);
 
-        console.log('adLink', adLink);
+        logger.info('adLink', adLink);
         return adLink; // For logging/debug
 
     } catch (error) {
-        console.log(error.message);
+        logger.error(error.message);
+        logger.error(error);
     }
 }
 

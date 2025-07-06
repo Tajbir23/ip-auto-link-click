@@ -1,33 +1,23 @@
 const fs = require('fs')
+const logger = require('./logger')
 
-const todayWorkCount = () => {
-    const today = new Date()
-    const dateKey = `${String(today.getDate()).padStart(2, '0')}${String(today.getMonth() + 1).padStart(2, '0')}${today.getFullYear()}`
-
-    let data = {}
-    if (fs.existsSync('workCount.json')) {
+const todayWorkCount = async () => {
+    try {
+        const data = fs.readFileSync('workCount.json', 'utf8')
+        const workCount = JSON.parse(data)
+        const today = new Date().toISOString().split('T')[0]
+        return workCount[today]?.count || 0
+    } catch (error) {
+        logger.error('Error reading workCount.json:', error)
         try {
-            data = JSON.parse(fs.readFileSync('workCount.json', 'utf8'))
+            // Create file if it doesn't exist
+            fs.writeFileSync('workCount.json', JSON.stringify({}))
+            return 0
         } catch (error) {
-            console.error('Error reading workCount.json:', error)
+            logger.error('Error writing to workCount.json:', error)
+            return 0
         }
     }
-
-    if (!data[dateKey]) {
-        data[dateKey] = { count: 1 }
-    } else {
-        data[dateKey].count++
-    }
-
-    // ফাইলে লিখুন
-    try {
-        fs.writeFileSync('workCount.json', JSON.stringify(data, null, 2), 'utf8')
-    } catch (error) {
-        console.error('Error writing to workCount.json:', error)
-    }
-
-    // নতুন count রিটার্ন করুন
-    return data[dateKey].count
 }
 
 module.exports = todayWorkCount

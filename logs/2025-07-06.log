@@ -1,0 +1,550 @@
+[2025-07-06T02:52:37.099Z] [INFO] Checking for updates...
+[2025-07-06T02:52:38.359Z] [INFO] Current branch: main
+[2025-07-06T02:52:38.382Z] [INFO] Already up to date
+[2025-07-06T02:52:38.382Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T02:54:15.633Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T02:54:15.634Z] [INFO] uploads/proxy.txt has been deleted
+[2025-07-06T02:54:28.096Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T02:54:30.543Z] [ERROR] Error interacting with iframe:
+[2025-07-06T02:54:34.421Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T02:54:36.704Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T02:54:36.738Z] [ERROR] Error interacting with iframe:
+[2025-07-06T02:54:38.449Z] [ERROR] Error interacting with iframe:
+[2025-07-06T02:55:00.684Z] [INFO] Removed proxy: b2b-s11.liveproxies.io:7383:LV2011165-lv_us-267039:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T02:55:00.684Z] [WARN] Browser browser_1751770455634_0.5481296811004026 detected Google. New global count: 1
+[2025-07-06T02:55:00.685Z] [INFO] Current global Google error count: 1, Active browsers: 2
+[2025-07-06T02:55:06.885Z] [INFO] Removed proxy: b2b-s12.liveproxies.io:7383:LV2011165-lv_us-45620:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T02:55:06.885Z] [WARN] Browser browser_1751770455634_0.2583957211654486 detected Google. New global count: 2
+[2025-07-06T02:55:06.886Z] [INFO] Current global Google error count: 2, Active browsers: 2
+[2025-07-06T02:55:08.587Z] [INFO] Removed proxy: b2b-s13.liveproxies.io:7383:LV2011165-lv_us-288190:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T02:55:08.587Z] [WARN] Browser browser_1751770455634_0.7164392577962981 detected Google. New global count: 3
+[2025-07-06T02:55:08.588Z] [INFO] Current global Google error count: 3, Active browsers: 2
+[2025-07-06T02:55:18.559Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T02:55:20.749Z] [ERROR] Error interacting with iframe:
+[2025-07-06T02:55:24.803Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T02:55:27.138Z] [ERROR] Error interacting with iframe:
+[2025-07-06T02:55:27.458Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T02:55:30.190Z] [ERROR] Error interacting with iframe:
+[2025-07-06T02:55:50.900Z] [INFO] Removed proxy: b2b-s15.liveproxies.io:7383:LV2011165-lv_us-670189:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T02:55:50.900Z] [WARN] Browser browser_1751770500685_0.061831682800175924 detected Google. New global count: 4
+[2025-07-06T02:55:50.900Z] [INFO] Current global Google error count: 4, Active browsers: 2
+[2025-07-06T02:55:57.280Z] [INFO] Removed proxy: b2b-s2.liveproxies.io:7383:LV2011165-lv_us-801020:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T02:55:57.280Z] [WARN] Browser browser_1751770506886_0.41330344766180827 detected Google. New global count: 5
+[2025-07-06T02:55:57.280Z] [INFO] Current global Google error count: 5, Active browsers: 2
+[2025-07-06T02:55:57.280Z] [WARN] Stopping all browsers due to too many Google detections
+[2025-07-06T02:56:00.336Z] [INFO] Removed proxy: b2b-s4.liveproxies.io:7383:LV2011165-lv_us-676369:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T02:56:00.336Z] [WARN] Browser browser_1751770508588_0.8940804894698704 detected Google. New global count: 1
+[2025-07-06T02:58:35.462Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T02:58:37.833Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T02:58:37.834Z] [INFO] No reCAPTCHA detected
+[2025-07-06T02:58:42.835Z] [INFO] All URLs encountered:
+[2025-07-06T02:58:42.836Z] [INFO] Browser location:
+[2025-07-06T02:58:42.837Z] [INFO] No Google indicators detected
+[2025-07-06T02:58:42.838Z] [INFO] Starting workCountIncrease function
+[2025-07-06T02:58:42.838Z] [INFO] Reading existing workCount.json
+[2025-07-06T02:58:42.838Z] [INFO] Current data:
+[2025-07-06T02:58:42.838Z] [INFO] First entry for today
+[2025-07-06T02:58:42.838Z] [INFO] Writing updated data:
+[2025-07-06T02:58:42.839Z] [INFO] Successfully updated work count
+[2025-07-06T02:59:13.945Z] [INFO] Removed proxy: b2b-s6.liveproxies.io:7383:LV2011165-lv_us-255570:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:01:53.037Z] [INFO] Checking for updates...
+[2025-07-06T03:01:54.810Z] [INFO] Current branch: main
+[2025-07-06T03:01:54.839Z] [INFO] Already up to date
+[2025-07-06T03:01:54.840Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:01:55.603Z] [INFO] Checking for updates...
+[2025-07-06T03:01:57.425Z] [INFO] Current branch: main
+[2025-07-06T03:01:57.446Z] [INFO] Already up to date
+[2025-07-06T03:01:57.446Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:02:35.182Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T03:02:57.115Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:02:58.512Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:02:59.982Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:03:00.889Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:03:10.175Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:03:30.120Z] [INFO] Removed proxy: b2b-s3.liveproxies.io:7383:LV2011165-lv_us-235416:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:03:30.120Z] [WARN] Browser browser_1751770955182_0.4861668531834791 detected Google. New global count: 1
+[2025-07-06T03:03:30.121Z] [INFO] Current global Google error count: 1, Active browsers: 2
+[2025-07-06T03:03:31.010Z] [INFO] Removed proxy: b2b-s1.liveproxies.io:7383:LV2011165-lv_us-880609:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:03:31.010Z] [WARN] Browser browser_1751770955182_0.8043929495441844 detected Google. New global count: 2
+[2025-07-06T03:03:31.010Z] [INFO] Current global Google error count: 2, Active browsers: 2
+[2025-07-06T03:03:53.953Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:03:54.866Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:03:56.734Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:03:57.273Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:38:04.691Z] [INFO] Checking for updates...
+[2025-07-06T03:38:07.031Z] [INFO] Current branch: main
+[2025-07-06T03:38:07.055Z] [INFO] Already up to date
+[2025-07-06T03:38:07.055Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:40:31.330Z] [INFO] Checking for updates...
+[2025-07-06T03:40:33.153Z] [INFO] Current branch: main
+[2025-07-06T03:40:33.177Z] [INFO] Already up to date
+[2025-07-06T03:40:33.177Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:41:16.386Z] [INFO] Checking for updates...
+[2025-07-06T03:41:17.254Z] [INFO] Current branch: main
+[2025-07-06T03:41:17.277Z] [INFO] Already up to date
+[2025-07-06T03:41:17.278Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:41:36.244Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T03:41:53.993Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:41:53.993Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:41:56.825Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:41:57.193Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:41:57.193Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:41:58.450Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:41:58.450Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:42:00.479Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:42:01.069Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:42:27.167Z] [INFO] Checking for updates...
+[2025-07-06T03:42:29.023Z] [INFO] Current branch: main
+[2025-07-06T03:42:29.047Z] [INFO] Already up to date
+[2025-07-06T03:42:29.048Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:42:29.606Z] [INFO] Checking for updates...
+[2025-07-06T03:42:30.422Z] [INFO] Current branch: main
+[2025-07-06T03:42:30.444Z] [INFO] Already up to date
+[2025-07-06T03:42:30.445Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:43:05.502Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T03:43:25.848Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:43:25.848Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:43:25.848Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:43:27.366Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:43:27.366Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:43:27.366Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:43:28.133Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:43:29.231Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:43:37.446Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:43:37.446Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:43:37.446Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:43:39.445Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:43:58.277Z] [INFO] Removed proxy: b2b-s7.liveproxies.io:7383:LV2011165-lv_us-186853:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:43:58.277Z] [WARN] Browser browser_1751773385502_0.5193324428850921 detected Google. New global count: 1
+[2025-07-06T03:43:58.277Z] [INFO] Current global Google error count: 1, Active browsers: 2
+[2025-07-06T03:43:59.370Z] [INFO] Removed proxy: b2b-s5.liveproxies.io:7383:LV2011165-lv_us-105137:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:43:59.370Z] [WARN] Browser browser_1751773385502_0.47305224764814935 detected Google. New global count: 2
+[2025-07-06T03:43:59.370Z] [INFO] Current global Google error count: 2, Active browsers: 2
+[2025-07-06T03:44:05.534Z] [INFO] Checking for updates...
+[2025-07-06T03:44:06.658Z] [INFO] Current branch: main
+[2025-07-06T03:44:06.682Z] [INFO] Already up to date
+[2025-07-06T03:44:06.683Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:44:06.695Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T03:44:21.576Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:44:21.577Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:44:21.577Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:44:24.512Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T03:44:24.513Z] [INFO] No reCAPTCHA detected
+[2025-07-06T03:44:29.526Z] [INFO] All URLs encountered:
+[2025-07-06T03:44:29.527Z] [INFO] Browser location:
+[2025-07-06T03:44:29.529Z] [INFO] No Google indicators detected
+[2025-07-06T03:44:29.529Z] [INFO] Starting workCountIncrease function
+[2025-07-06T03:44:29.529Z] [INFO] Reading existing workCount.json
+[2025-07-06T03:44:29.529Z] [INFO] Current data:
+[2025-07-06T03:44:29.529Z] [INFO] Incrementing count for today from
+[2025-07-06T03:44:29.529Z] [INFO] Writing updated data:
+[2025-07-06T03:44:29.530Z] [INFO] Successfully updated work count
+[2025-07-06T03:44:29.698Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:44:29.698Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:44:29.699Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:44:32.177Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:44:39.212Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:44:39.212Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:44:39.212Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:44:41.184Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:44:59.661Z] [INFO] Removed proxy: b2b-s8.liveproxies.io:7383:LV2011165-lv_us-510395:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:44:59.661Z] [INFO] Current global Google error count: 0, Active browsers: 2
+[2025-07-06T03:45:02.330Z] [INFO] Removed proxy: b2b-s9.liveproxies.io:7383:LV2011165-lv_us-790710:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:45:02.330Z] [WARN] Browser browser_1751773446695_0.17172320146328635 detected Google. New global count: 1
+[2025-07-06T03:45:02.330Z] [INFO] Current global Google error count: 1, Active browsers: 2
+[2025-07-06T03:45:11.336Z] [INFO] Removed proxy: b2b-s14.liveproxies.io:7383:LV2011165-lv_us-485187:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:45:11.336Z] [WARN] Browser browser_1751773446695_0.027454044988202364 detected Google. New global count: 2
+[2025-07-06T03:45:11.337Z] [INFO] Current global Google error count: 2, Active browsers: 2
+[2025-07-06T03:45:20.151Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:45:20.151Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:45:20.151Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:45:22.151Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:45:25.177Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:45:25.177Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:45:25.177Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-06T03:45:27.582Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:45:33.383Z] [INFO] Checking for updates...
+[2025-07-06T03:45:35.168Z] [INFO] Current branch: main
+[2025-07-06T03:45:35.192Z] [INFO] Already up to date
+[2025-07-06T03:45:35.192Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:45:44.209Z] [INFO] Checking for updates...
+[2025-07-06T03:45:46.051Z] [INFO] Current branch: main
+[2025-07-06T03:45:46.084Z] [INFO] Already up to date
+[2025-07-06T03:45:46.085Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:45:47.137Z] [INFO] Checking for updates...
+[2025-07-06T03:45:48.944Z] [INFO] Current branch: main
+[2025-07-06T03:45:48.966Z] [INFO] Already up to date
+[2025-07-06T03:45:48.967Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:48:19.316Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T03:48:36.078Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:48:44.043Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:48:45.027Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:49:06.216Z] [INFO] Removed proxy: b2b-s10.liveproxies.io:7383:LV2011165-lv_us-91377:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:49:06.216Z] [WARN] Browser browser_1751773699316_0.7631475708359019 detected Google. New global count: 1
+[2025-07-06T03:49:06.216Z] [INFO] Current global Google error count: 1, Active browsers: 2
+[2025-07-06T03:49:14.173Z] [INFO] Removed proxy: b2b-s11.liveproxies.io:7383:LV2011165-lv_us-301891:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:49:14.173Z] [WARN] Browser browser_1751773699316_0.8026962413292718 detected Google. New global count: 2
+[2025-07-06T03:49:14.173Z] [INFO] Current global Google error count: 2, Active browsers: 2
+[2025-07-06T03:49:15.176Z] [INFO] Removed proxy: b2b-s12.liveproxies.io:7383:LV2011165-lv_us-72530:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:49:15.176Z] [WARN] Browser browser_1751773699316_0.7202373165839102 detected Google. New global count: 3
+[2025-07-06T03:49:15.176Z] [INFO] Current global Google error count: 3, Active browsers: 2
+[2025-07-06T03:49:31.183Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:49:38.432Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:49:40.050Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:50:01.317Z] [INFO] Removed proxy: b2b-s14.liveproxies.io:7383:LV2011165-lv_us-65405:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:50:01.317Z] [WARN] Browser browser_1751773746216_0.7488729409610928 detected Google. New global count: 4
+[2025-07-06T03:50:01.317Z] [INFO] Current global Google error count: 4, Active browsers: 2
+[2025-07-06T03:50:08.561Z] [INFO] Removed proxy: b2b-s3.liveproxies.io:7383:LV2011165-lv_us-740953:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:50:08.561Z] [WARN] Browser browser_1751773755176_0.09570814644337333 detected Google. New global count: 5
+[2025-07-06T03:50:08.562Z] [INFO] Current global Google error count: 5, Active browsers: 2
+[2025-07-06T03:50:08.562Z] [WARN] Stopping all browsers due to too many Google detections
+[2025-07-06T03:50:10.195Z] [INFO] Removed proxy: b2b-s1.liveproxies.io:7383:LV2011165-lv_us-500501:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:50:10.195Z] [WARN] Browser browser_1751773754173_0.8256895524631271 detected Google. New global count: 1
+[2025-07-06T03:50:23.392Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:50:40.468Z] [INFO] Checking for updates...
+[2025-07-06T03:50:42.361Z] [INFO] Current branch: main
+[2025-07-06T03:50:42.385Z] [INFO] Already up to date
+[2025-07-06T03:50:42.385Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:50:43.161Z] [INFO] Checking for updates...
+[2025-07-06T03:50:44.956Z] [INFO] Current branch: main
+[2025-07-06T03:50:44.978Z] [INFO] Already up to date
+[2025-07-06T03:50:44.979Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:51:21.318Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T03:51:40.674Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:51:45.934Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:51:47.540Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:52:10.841Z] [INFO] Removed proxy: b2b-s13.liveproxies.io:7383:LV2011165-lv_us-117223:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:52:10.842Z] [WARN] Browser browser_1751773881319_0.7295425129997954 detected Google. New global count: 1
+[2025-07-06T03:52:10.842Z] [INFO] Current global Google error count: 1, Active browsers: 2
+[2025-07-06T03:52:16.077Z] [INFO] Removed proxy: b2b-s15.liveproxies.io:7383:LV2011165-lv_us-266083:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:52:16.077Z] [WARN] Browser browser_1751773881319_0.6709936129246763 detected Google. New global count: 2
+[2025-07-06T03:52:16.078Z] [INFO] Current global Google error count: 2, Active browsers: 2
+[2025-07-06T03:52:17.663Z] [INFO] Removed proxy: b2b-s2.liveproxies.io:7383:LV2011165-lv_us-110893:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:52:17.663Z] [WARN] Browser browser_1751773881319_0.3767320003114514 detected Google. New global count: 3
+[2025-07-06T03:52:17.663Z] [INFO] Current global Google error count: 3, Active browsers: 2
+[2025-07-06T03:52:34.688Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:52:43.579Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:52:43.813Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:52:52.640Z] [INFO] Checking for updates...
+[2025-07-06T03:52:54.455Z] [INFO] Current branch: main
+[2025-07-06T03:52:54.479Z] [INFO] Already up to date
+[2025-07-06T03:52:54.479Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:53:05.548Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T03:53:19.846Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T03:53:19.847Z] [INFO] No reCAPTCHA detected
+[2025-07-06T03:53:24.853Z] [INFO] All URLs encountered:
+[2025-07-06T03:53:24.854Z] [INFO] Browser location:
+[2025-07-06T03:53:24.856Z] [INFO] No Google indicators detected
+[2025-07-06T03:53:24.856Z] [INFO] Starting workCountIncrease function
+[2025-07-06T03:53:24.857Z] [INFO] Reading existing workCount.json
+[2025-07-06T03:53:24.857Z] [INFO] Current data:
+[2025-07-06T03:53:24.857Z] [INFO] Incrementing count for today from
+[2025-07-06T03:53:24.857Z] [INFO] Writing updated data:
+[2025-07-06T03:53:24.857Z] [INFO] Successfully updated work count
+[2025-07-06T03:53:28.045Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:53:29.237Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:53:54.981Z] [INFO] Removed proxy: b2b-s4.liveproxies.io:7383:LV2011165-lv_us-310331:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:53:54.981Z] [INFO] Current global Google error count: 0, Active browsers: 2
+[2025-07-06T03:53:58.222Z] [INFO] Removed proxy: b2b-s5.liveproxies.io:7383:LV2011165-lv_us-475491:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:53:58.222Z] [WARN] Browser browser_1751773985548_0.8723285652616264 detected Google. New global count: 1
+[2025-07-06T03:53:58.222Z] [INFO] Current global Google error count: 1, Active browsers: 2
+[2025-07-06T03:53:59.391Z] [INFO] Removed proxy: b2b-s6.liveproxies.io:7383:LV2011165-lv_us-325877:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:53:59.391Z] [WARN] Browser browser_1751773985548_0.5547387447031571 detected Google. New global count: 2
+[2025-07-06T03:53:59.391Z] [INFO] Current global Google error count: 2, Active browsers: 2
+[2025-07-06T03:54:20.173Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:54:20.606Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:54:26.012Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:54:33.339Z] [INFO] Checking for updates...
+[2025-07-06T03:54:35.164Z] [INFO] Current branch: main
+[2025-07-06T03:54:35.190Z] [INFO] Already up to date
+[2025-07-06T03:54:35.190Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:54:35.202Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T03:54:51.430Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T03:54:51.431Z] [INFO] No reCAPTCHA detected
+[2025-07-06T03:54:54.783Z] [INFO] Iframe loaded
+[2025-07-06T03:54:54.783Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:54:56.438Z] [INFO] All URLs encountered:
+[2025-07-06T03:54:56.440Z] [INFO] Browser location:
+[2025-07-06T03:54:56.441Z] [INFO] No Google indicators detected
+[2025-07-06T03:54:56.441Z] [INFO] Starting workCountIncrease function
+[2025-07-06T03:54:56.441Z] [INFO] Reading existing workCount.json
+[2025-07-06T03:54:56.442Z] [INFO] Current data:
+[2025-07-06T03:54:56.442Z] [INFO] Incrementing count for today from
+[2025-07-06T03:54:56.442Z] [INFO] Writing updated data:
+[2025-07-06T03:54:56.442Z] [INFO] Successfully updated work count
+[2025-07-06T03:54:57.894Z] [INFO] Iframe loaded
+[2025-07-06T03:54:57.894Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:55:24.945Z] [INFO] Removed proxy: b2b-s8.liveproxies.io:7383:LV2011165-lv_us-775737:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:55:24.945Z] [WARN] Browser browser_1751774075202_0.5264055614384029 detected Google. New global count: 1
+[2025-07-06T03:55:24.945Z] [INFO] Current global Google error count: 1, Active browsers: 2
+[2025-07-06T03:55:26.589Z] [INFO] Removed proxy: b2b-s7.liveproxies.io:7383:LV2011165-lv_us-155532:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:55:26.589Z] [INFO] Current global Google error count: 1, Active browsers: 2
+[2025-07-06T03:55:28.085Z] [INFO] Removed proxy: b2b-s9.liveproxies.io:7383:LV2011165-lv_us-30994:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:55:28.085Z] [WARN] Browser browser_1751774075202_0.16329497065848075 detected Google. New global count: 2
+[2025-07-06T03:55:28.086Z] [INFO] Current global Google error count: 2, Active browsers: 2
+[2025-07-06T03:55:39.399Z] [INFO] Checking for updates...
+[2025-07-06T03:55:41.489Z] [INFO] Current branch: main
+[2025-07-06T03:55:41.521Z] [INFO] Already up to date
+[2025-07-06T03:55:41.522Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:55:42.476Z] [INFO] Checking for updates...
+[2025-07-06T03:55:44.287Z] [INFO] Current branch: main
+[2025-07-06T03:55:44.309Z] [INFO] Already up to date
+[2025-07-06T03:55:44.310Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:55:59.250Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T03:56:16.078Z] [INFO] Iframe loaded
+[2025-07-06T03:56:16.091Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:56:21.330Z] [INFO] Iframe loaded
+[2025-07-06T03:56:21.339Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:56:23.812Z] [INFO] Iframe loaded
+[2025-07-06T03:56:23.823Z] [ERROR] Error interacting with iframe:
+[2025-07-06T03:56:46.276Z] [INFO] Removed proxy: b2b-s10.liveproxies.io:7383:LV2011165-lv_us-455709:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:56:46.276Z] [WARN] Browser browser_1751774159250_0.06517596865495312 detected Google. New global count: 1
+[2025-07-06T03:56:46.276Z] [INFO] Current global Google error count: 1, Active browsers: 2
+[2025-07-06T03:56:51.532Z] [INFO] Removed proxy: b2b-s11.liveproxies.io:7383:LV2011165-lv_us-120554:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:56:51.532Z] [WARN] Browser browser_1751774159250_0.1960104455281062 detected Google. New global count: 2
+[2025-07-06T03:56:51.532Z] [INFO] Current global Google error count: 2, Active browsers: 2
+[2025-07-06T03:56:54.007Z] [INFO] Removed proxy: b2b-s12.liveproxies.io:7383:LV2011165-lv_us-596588:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T03:56:54.007Z] [WARN] Browser browser_1751774159250_0.5107428698097982 detected Google. New global count: 3
+[2025-07-06T03:56:54.007Z] [INFO] Current global Google error count: 3, Active browsers: 2
+[2025-07-06T03:57:03.792Z] [INFO] Checking for updates...
+[2025-07-06T03:57:06.070Z] [INFO] Current branch: main
+[2025-07-06T03:57:06.101Z] [INFO] Already up to date
+[2025-07-06T03:57:06.102Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:57:06.117Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T03:57:07.328Z] [INFO] Checking for updates...
+[2025-07-06T03:57:09.147Z] [INFO] Current branch: main
+[2025-07-06T03:57:09.170Z] [INFO] Already up to date
+[2025-07-06T03:57:09.170Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T03:57:32.408Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T03:57:51.457Z] [INFO] Iframe loaded
+[2025-07-06T03:57:51.470Z] [INFO] Clicking link:
+[2025-07-06T03:57:55.761Z] [INFO] Iframe loaded
+[2025-07-06T03:57:55.772Z] [INFO] Clicking link:
+[2025-07-06T03:57:58.511Z] [INFO] Iframe loaded
+[2025-07-06T03:57:58.518Z] [INFO] Clicking link:
+[2025-07-06T03:57:58.522Z] [WARN] Error clicking link:
+[2025-07-06T03:57:58.523Z] [INFO] All targets encountered:
+[2025-07-06T03:57:58.523Z] [INFO] No Google detected, proceeding with success
+[2025-07-06T03:57:58.523Z] [INFO] Checking main page for Google
+[2025-07-06T03:57:58.680Z] [INFO] New target created:
+[2025-07-06T03:58:03.533Z] [INFO] All URLs encountered:
+[2025-07-06T03:58:03.534Z] [INFO] Browser location:
+[2025-07-06T03:58:03.536Z] [INFO] No Google indicators detected
+[2025-07-06T03:58:03.536Z] [INFO] No Google detected, proceeding with success
+[2025-07-06T03:58:03.540Z] [INFO] Checking new page:
+[2025-07-06T03:58:03.689Z] [INFO] All URLs encountered:
+[2025-07-06T03:58:03.690Z] [INFO] Browser location:
+[2025-07-06T03:58:03.692Z] [INFO] No Google indicators detected
+[2025-07-06T03:58:08.019Z] [INFO] New target created:
+[2025-07-06T03:58:08.554Z] [INFO] All URLs encountered:
+[2025-07-06T03:58:08.555Z] [INFO] Browser location:
+[2025-07-06T03:58:08.557Z] [INFO] No Google indicators detected
+[2025-07-06T03:58:08.557Z] [INFO] No Google detected, proceeding with success
+[2025-07-06T03:58:08.557Z] [INFO] closing new page
+[2025-07-06T03:58:13.030Z] [INFO] All URLs encountered:
+[2025-07-06T03:58:13.031Z] [INFO] Browser location:
+[2025-07-06T03:58:13.032Z] [INFO] Google UI elements detected
+[2025-07-06T03:58:13.032Z] [WARN] Google detected in new target:
+[2025-07-06T03:58:13.573Z] [INFO] All URLs encountered:
+[2025-07-06T03:58:13.574Z] [INFO] Browser location:
+[2025-07-06T03:58:13.575Z] [INFO] No Google indicators detected
+[2025-07-06T03:58:13.575Z] [INFO] No Google detected, proceeding with success
+[2025-07-06T03:58:13.583Z] [INFO] Iframe loaded
+[2025-07-06T03:58:13.591Z] [INFO] Clicking link:
+[2025-07-06T03:58:21.477Z] [WARN] Error clicking link:
+[2025-07-06T03:58:21.477Z] [INFO] All targets encountered:
+[2025-07-06T03:58:25.785Z] [WARN] Error clicking link:
+[2025-07-06T03:58:25.785Z] [INFO] All targets encountered:
+[2025-07-06T03:58:26.485Z] [INFO] All URLs encountered:
+[2025-07-06T03:58:26.486Z] [INFO] Browser location:
+[2025-07-06T03:58:26.487Z] [INFO] Google UI elements detected
+[2025-07-06T03:58:26.487Z] [WARN] Google detected through target monitoring
+[2025-07-06T03:58:29.113Z] [INFO] New target created:
+[2025-07-06T03:58:29.113Z] [INFO] New target created:
+[2025-07-06T03:58:30.786Z] [INFO] All URLs encountered:
+[2025-07-06T03:58:30.787Z] [INFO] Browser location:
+[2025-07-06T03:58:30.788Z] [INFO] No Google indicators detected
+[2025-07-06T03:58:30.788Z] [INFO] No Google detected, proceeding with success
+[2025-07-06T03:58:30.788Z] [INFO] Checking main page for Google
+[2025-07-06T03:58:34.119Z] [INFO] All URLs encountered:
+[2025-07-06T03:58:34.120Z] [INFO] All URLs encountered:
+[2025-07-06T03:58:34.120Z] [INFO] Browser location:
+[2025-07-06T03:58:34.120Z] [INFO] Browser location:
+[2025-07-06T03:58:34.121Z] [INFO] Google UI elements detected
+[2025-07-06T03:58:34.121Z] [WARN] Google detected in new target:
+[2025-07-06T03:58:34.121Z] [INFO] Google UI elements detected
+[2025-07-06T03:58:34.121Z] [WARN] Google detected in new target:
+[2025-07-06T03:58:35.795Z] [INFO] All URLs encountered:
+[2025-07-06T03:58:35.796Z] [INFO] Browser location:
+[2025-07-06T03:58:35.797Z] [INFO] No Google indicators detected
+[2025-07-06T03:58:35.797Z] [INFO] No Google detected, proceeding with success
+[2025-07-06T03:58:35.802Z] [INFO] Checking new page:
+[2025-07-06T04:12:19.036Z] [INFO] Checking for updates...
+[2025-07-06T04:12:20.845Z] [INFO] Current branch: main
+[2025-07-06T04:12:20.867Z] [INFO] Already up to date
+[2025-07-06T04:12:20.868Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T04:12:37.123Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-06T04:13:24.258Z] [INFO] findAds
+[2025-07-06T04:13:24.259Z] [INFO] document ready state complete
+[2025-07-06T04:13:24.260Z] [ERROR] logger is not defined
+[2025-07-06T04:13:24.260Z] [ERROR] ReferenceError: logger is not defined
+[2025-07-06T04:13:28.237Z] [INFO] findAds
+[2025-07-06T04:13:28.239Z] [INFO] document ready state complete
+[2025-07-06T04:13:28.240Z] [ERROR] logger is not defined
+[2025-07-06T04:13:28.240Z] [ERROR] ReferenceError: logger is not defined
+[2025-07-06T04:13:30.217Z] [INFO] findAds
+[2025-07-06T04:13:30.219Z] [INFO] document ready state complete
+[2025-07-06T04:13:30.221Z] [ERROR] logger is not defined
+[2025-07-06T04:13:30.221Z] [ERROR] ReferenceError: logger is not defined
+[2025-07-06T04:13:37.605Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T04:13:37.605Z] [INFO] No reCAPTCHA detected
+[2025-07-06T04:13:42.118Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T04:13:42.119Z] [INFO] No reCAPTCHA detected
+[2025-07-06T04:13:42.619Z] [INFO] Starting workCountIncrease function
+[2025-07-06T04:13:42.619Z] [INFO] Reading existing workCount.json
+[2025-07-06T04:13:42.619Z] [INFO] Current data:
+[2025-07-06T04:13:42.619Z] [INFO] Incrementing count for today from
+[2025-07-06T04:13:42.619Z] [INFO] Writing updated data:
+[2025-07-06T04:13:42.619Z] [INFO] Successfully updated work count
+[2025-07-06T04:13:45.105Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T04:13:45.106Z] [INFO] No reCAPTCHA detected
+[2025-07-06T04:13:47.124Z] [INFO] Starting workCountIncrease function
+[2025-07-06T04:13:47.124Z] [INFO] Reading existing workCount.json
+[2025-07-06T04:13:47.124Z] [INFO] Current data:
+[2025-07-06T04:13:47.124Z] [INFO] Incrementing count for today from
+[2025-07-06T04:13:47.124Z] [INFO] Writing updated data:
+[2025-07-06T04:13:47.124Z] [INFO] Successfully updated work count
+[2025-07-06T04:13:50.121Z] [INFO] Starting workCountIncrease function
+[2025-07-06T04:13:50.121Z] [INFO] Reading existing workCount.json
+[2025-07-06T04:13:50.121Z] [INFO] Current data:
+[2025-07-06T04:13:50.121Z] [INFO] Incrementing count for today from
+[2025-07-06T04:13:50.121Z] [INFO] Writing updated data:
+[2025-07-06T04:13:50.121Z] [INFO] Successfully updated work count
+[2025-07-06T04:14:12.756Z] [INFO] Removed proxy: b2b-s14.liveproxies.io:7383:LV2011165-lv_us-283266:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T04:14:12.756Z] [INFO] Current global Google error count: 0, Active browsers: 2
+[2025-07-06T04:14:17.275Z] [INFO] Removed proxy: b2b-s13.liveproxies.io:7383:LV2011165-lv_us-125558:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T04:14:17.275Z] [INFO] Current global Google error count: 0, Active browsers: 2
+[2025-07-06T04:14:20.299Z] [INFO] Removed proxy: b2b-s15.liveproxies.io:7383:LV2011165-lv_us-686054:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T04:14:20.299Z] [INFO] Current global Google error count: 0, Active browsers: 2
+[2025-07-06T04:14:59.859Z] [INFO] findAds
+[2025-07-06T04:14:59.861Z] [INFO] document ready state complete
+[2025-07-06T04:14:59.863Z] [ERROR] logger is not defined
+[2025-07-06T04:14:59.863Z] [ERROR] ReferenceError: logger is not defined
+[2025-07-06T04:15:07.756Z] [INFO] findAds
+[2025-07-06T04:15:07.757Z] [INFO] document ready state complete
+[2025-07-06T04:15:07.758Z] [ERROR] logger is not defined
+[2025-07-06T04:15:07.758Z] [ERROR] ReferenceError: logger is not defined
+[2025-07-06T04:15:11.896Z] [INFO] findAds
+[2025-07-06T04:15:11.899Z] [INFO] document ready state complete
+[2025-07-06T04:15:11.899Z] [ERROR] logger is not defined
+[2025-07-06T04:15:11.899Z] [ERROR] ReferenceError: logger is not defined
+[2025-07-06T04:15:15.504Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T04:15:15.505Z] [INFO] No reCAPTCHA detected
+[2025-07-06T04:15:20.507Z] [INFO] Starting workCountIncrease function
+[2025-07-06T04:15:20.508Z] [INFO] Reading existing workCount.json
+[2025-07-06T04:15:20.508Z] [INFO] Current data:
+[2025-07-06T04:15:20.508Z] [INFO] Incrementing count for today from
+[2025-07-06T04:15:20.508Z] [INFO] Writing updated data:
+[2025-07-06T04:15:20.508Z] [INFO] Successfully updated work count
+[2025-07-06T04:15:23.482Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T04:15:23.483Z] [INFO] No reCAPTCHA detected
+[2025-07-06T04:15:24.193Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T04:15:24.194Z] [INFO] No reCAPTCHA detected
+[2025-07-06T04:15:28.486Z] [INFO] Starting workCountIncrease function
+[2025-07-06T04:15:28.487Z] [INFO] Reading existing workCount.json
+[2025-07-06T04:15:28.487Z] [INFO] Current data:
+[2025-07-06T04:15:28.487Z] [INFO] Incrementing count for today from
+[2025-07-06T04:15:28.487Z] [INFO] Writing updated data:
+[2025-07-06T04:15:28.487Z] [INFO] Successfully updated work count
+[2025-07-06T04:15:29.197Z] [INFO] Starting workCountIncrease function
+[2025-07-06T04:15:29.197Z] [INFO] Reading existing workCount.json
+[2025-07-06T04:15:29.197Z] [INFO] Current data:
+[2025-07-06T04:15:29.197Z] [INFO] Incrementing count for today from
+[2025-07-06T04:15:29.197Z] [INFO] Writing updated data:
+[2025-07-06T04:15:29.197Z] [INFO] Successfully updated work count
+[2025-07-06T04:15:50.648Z] [INFO] Removed proxy: b2b-s2.liveproxies.io:7383:LV2011165-lv_us-765584:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T04:15:50.648Z] [INFO] Current global Google error count: 0, Active browsers: 2
+[2025-07-06T04:15:58.652Z] [INFO] Removed proxy: b2b-s6.liveproxies.io:7383:LV2011165-lv_us-271115:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T04:15:58.652Z] [INFO] Current global Google error count: 0, Active browsers: 2
+[2025-07-06T04:15:59.360Z] [INFO] Removed proxy: b2b-s4.liveproxies.io:7383:LV2011165-lv_us-285215:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T04:15:59.360Z] [INFO] Current global Google error count: 0, Active browsers: 2
+[2025-07-06T04:16:12.680Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T04:16:12.680Z] [INFO] No reCAPTCHA detected
+[2025-07-06T04:16:17.697Z] [INFO] Starting workCountIncrease function
+[2025-07-06T04:16:17.697Z] [INFO] Reading existing workCount.json
+[2025-07-06T04:16:17.697Z] [INFO] Current data:
+[2025-07-06T04:16:17.697Z] [INFO] Incrementing count for today from
+[2025-07-06T04:16:17.697Z] [INFO] Writing updated data:
+[2025-07-06T04:16:17.698Z] [INFO] Successfully updated work count
+[2025-07-06T04:16:47.833Z] [INFO] Removed proxy: b2b-s12.liveproxies.io:7383:LV2011165-lv_us-126259:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T04:16:47.834Z] [INFO] Current global Google error count: 0, Active browsers: 2
+[2025-07-06T04:16:50.602Z] [INFO] findAds
+[2025-07-06T04:16:50.604Z] [INFO] document ready state complete
+[2025-07-06T04:16:50.607Z] [ERROR] logger is not defined
+[2025-07-06T04:16:50.607Z] [ERROR] ReferenceError: logger is not defined
+[2025-07-06T04:16:51.592Z] [INFO] findAds
+[2025-07-06T04:16:51.593Z] [INFO] document ready state complete
+[2025-07-06T04:16:51.594Z] [ERROR] logger is not defined
+[2025-07-06T04:16:51.594Z] [ERROR] ReferenceError: logger is not defined
+[2025-07-06T04:17:03.183Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T04:17:03.183Z] [INFO] No reCAPTCHA detected
+[2025-07-06T04:17:08.185Z] [INFO] Starting workCountIncrease function
+[2025-07-06T04:17:08.185Z] [INFO] Reading existing workCount.json
+[2025-07-06T04:17:08.185Z] [INFO] Current data:
+[2025-07-06T04:17:08.185Z] [INFO] Incrementing count for today from
+[2025-07-06T04:17:08.185Z] [INFO] Writing updated data:
+[2025-07-06T04:17:08.186Z] [INFO] Successfully updated work count
+[2025-07-06T04:17:08.608Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T04:17:08.608Z] [INFO] No reCAPTCHA detected
+[2025-07-06T04:17:13.623Z] [INFO] Starting workCountIncrease function
+[2025-07-06T04:17:13.623Z] [INFO] Reading existing workCount.json
+[2025-07-06T04:17:13.623Z] [INFO] Current data:
+[2025-07-06T04:17:13.623Z] [INFO] Incrementing count for today from
+[2025-07-06T04:17:13.623Z] [INFO] Writing updated data:
+[2025-07-06T04:17:13.623Z] [INFO] Successfully updated work count
+[2025-07-06T04:17:38.347Z] [INFO] Removed proxy: b2b-s10.liveproxies.io:7383:LV2011165-lv_us-631221:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T04:17:38.348Z] [INFO] Current global Google error count: 0, Active browsers: 2
+[2025-07-06T04:17:38.913Z] [INFO] findAds
+[2025-07-06T04:17:38.915Z] [INFO] document ready state complete
+[2025-07-06T04:17:38.916Z] [ERROR] logger is not defined
+[2025-07-06T04:17:38.916Z] [ERROR] ReferenceError: logger is not defined
+[2025-07-06T04:17:43.803Z] [INFO] Removed proxy: b2b-s8.liveproxies.io:7383:LV2011165-lv_us-150375:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T04:17:43.804Z] [INFO] Current global Google error count: 0, Active browsers: 2
+[2025-07-06T04:17:53.096Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T04:17:53.097Z] [INFO] No reCAPTCHA detected
+[2025-07-06T04:17:58.107Z] [INFO] Starting workCountIncrease function
+[2025-07-06T04:17:58.107Z] [INFO] Reading existing workCount.json
+[2025-07-06T04:17:58.107Z] [INFO] Current data:
+[2025-07-06T04:17:58.107Z] [INFO] Incrementing count for today from
+[2025-07-06T04:17:58.107Z] [INFO] Writing updated data:
+[2025-07-06T04:17:58.108Z] [INFO] Successfully updated work count
+[2025-07-06T04:18:25.550Z] [INFO] findAds
+[2025-07-06T04:18:25.551Z] [INFO] document ready state complete
+[2025-07-06T04:18:25.552Z] [ERROR] logger is not defined
+[2025-07-06T04:18:25.552Z] [ERROR] ReferenceError: logger is not defined
+[2025-07-06T04:18:28.255Z] [INFO] Removed proxy: b2b-s14.liveproxies.io:7383:LV2011165-lv_us-106662:pn4hfpuxlyl5CtV0cPHL
+[2025-07-06T04:18:28.255Z] [INFO] Current global Google error count: 0, Active browsers: 2
+[2025-07-06T04:18:28.426Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T04:18:28.426Z] [INFO] No reCAPTCHA detected
+[2025-07-06T04:18:37.414Z] [INFO] Starting workCountIncrease function
+[2025-07-06T04:18:37.414Z] [INFO] Reading existing workCount.json
+[2025-07-06T04:18:37.414Z] [INFO] Current data:
+[2025-07-06T04:18:37.414Z] [INFO] Incrementing count for today from
+[2025-07-06T04:18:37.414Z] [INFO] Writing updated data:
+[2025-07-06T04:18:37.415Z] [INFO] Successfully updated work count
+[2025-07-06T04:18:48.297Z] [INFO] Checking for reCAPTCHA...
+[2025-07-06T04:18:48.297Z] [INFO] No reCAPTCHA detected
+[2025-07-06T04:18:53.303Z] [INFO] Starting workCountIncrease function
+[2025-07-06T04:18:53.303Z] [INFO] Reading existing workCount.json
+[2025-07-06T04:18:53.303Z] [INFO] Current data:
+[2025-07-06T04:18:53.303Z] [INFO] Incrementing count for today from
+[2025-07-06T04:18:53.303Z] [INFO] Writing updated data:
+[2025-07-06T04:18:53.304Z] [INFO] Successfully updated work count
+[2025-07-06T04:19:05.858Z] [INFO] Checking for updates...
+[2025-07-06T04:19:07.905Z] [INFO] Current branch: main
+[2025-07-06T04:19:07.928Z] [INFO] Already up to date
+[2025-07-06T04:19:07.929Z] [INFO] Server is running on http://localhost:3000
+[2025-07-06T04:19:50.898Z] [INFO] Checking for updates...
+[2025-07-06T04:19:53.250Z] [INFO] Current branch: main
+[2025-07-06T04:19:53.271Z] [INFO] Already up to date
+[2025-07-06T04:19:53.271Z] [INFO] Server is running on http://localhost:3000

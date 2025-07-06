@@ -6,10 +6,13 @@ const uploadProxy = require('./handler/uploadProxy')
 const { runUrl, stopScraping } = require('./handler/runUrl')
 const totalWorkCount = require('./handler/totalWorkCount')
 const todayWorkCount = require('./handler/todayWorkCount')
-
-const net = require('net');
-const fs = require('fs');
+const logger = require('./handler/logger')
+const path = require('path')
+const fs = require('fs')
+const net = require('net')
 const runWork = require('./handler/runWork')
+const checkLogs = require('./handler/checkLogs')
+const terminalLogs = require('./handler/terminal-logs')
 
 function findAvailablePort(startPort, callback) {
     const server = net.createServer();
@@ -58,7 +61,7 @@ app.get('/stop-scrape', (req, res) => {
 })
 
 app.post('/stop-scrape', async(req, res) => {
-    console.log('Stopping scrape process...');
+    logger.info('Stopping scrape process...');
     stopScraping();
     res.redirect('/');
 })
@@ -82,6 +85,17 @@ app.get('/today-work-count', async(req, res) => {
     res.json({ today_ip_count: workCount })
 })
 
+// Add route for viewing logs
+app.get('/logs', checkLogs)
+
+// Add route for viewing terminal logs
+app.get('/terminal', (req, res) => {
+    res.render('terminal');
+});
+
+// WebSocket endpoint for real-time terminal logs
+app.get('/terminal-logs', terminalLogs);
+
 findAvailablePort(3000, (PORT) => {
     app.listen(PORT, async () => {
         // Write PID file for this server
@@ -94,20 +108,20 @@ findAvailablePort(3000, (PORT) => {
             const { execSync } = require('child_process');
             
             // Check for updates from git
-            console.log('Checking for updates...');
+            logger.info('Checking for updates...');
             try {
                 // Fetch latest changes
                 execSync('git fetch', { stdio: 'inherit' });
                 
                 // Get current branch name
                 const currentBranch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
-                console.log(`Current branch: ${currentBranch}`);
+                logger.info(`Current branch: ${currentBranch}`);
                 
                 // Check if we're behind the remote
                 const behindCount = execSync(`git rev-list HEAD..origin/${currentBranch} --count`).toString().trim();
                 
                 if (parseInt(behindCount) > 0) {
-                    console.log('Updates found, attempting to merge...');
+                    logger.info('Updates found, attempting to merge...');
                     
                     try {
                         // Try to merge with auto-stash and theirs strategy
@@ -119,34 +133,35 @@ findAvailablePort(3000, (PORT) => {
                         try {
                             execSync('git stash pop', { stdio: 'inherit' });
                         } catch (stashError) {
-                            console.log('Note: Stashed changes could not be applied, but update succeeded');
+                            logger.warn('Note: Stashed changes could not be applied, but update succeeded');
                         }
                         
                         // Install dependencies
-                        console.log('Installing dependencies...');
+                        logger.info('Installing dependencies...');
                         execSync('npm install', { stdio: 'inherit' });
                         
-                        console.log('Successfully updated, merged changes, and installed dependencies');
+                        logger.info('Successfully updated, merged changes, and installed dependencies');
                     } catch (mergeError) {
-                        console.error('Error during merge:', mergeError.message);
+                        logger.error('Error during merge: ' + mergeError.message);
                         // Attempt to abort any pending merge
                         try {
                             execSync('git merge --abort', { stdio: 'inherit' });
                         } catch (abortError) {
                             // Ignore abort errors
                         }
-                        console.log('Merge aborted. Please resolve conflicts manually');
+                        logger.warn('Merge aborted. Please resolve conflicts manually');
                     }
                 } else {
-                    console.log('Already up to date');
+                    logger.info('Already up to date');
                 }
             } catch (error) {
-                console.error('Error during git operations:', error.message);
+                logger.error('Error during git operations: ' + error.message);
             }
             
             console.log(`Server is running on http://localhost:${PORT}`);
+            logger.info(`Server is running on http://localhost:${PORT}`);
         } catch (error) {
-            console.error('Error during update check:', error.message);
+            logger.error('Error during update check: ' + error.message);
         }
     });
 });

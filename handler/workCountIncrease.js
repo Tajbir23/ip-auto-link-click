@@ -1,42 +1,41 @@
 const fs = require('fs');
+const logger = require('./logger');
 
-const workCountIncrease = () => {
-    console.log('Starting workCountIncrease function');
-    const today = new Date();
-    const dateKey = `${String(today.getDate()).padStart(2, '0')}${String(today.getMonth() + 1).padStart(2, '0')}${today.getFullYear()}`;
-    
-    // Initialize data
-    let data = {};
-    
+const workCountIncrease = async () => {
+    logger.info('Starting workCountIncrease function');
     try {
-        // Check if file exists and read it
-        if (fs.existsSync('workCount.json')) {
-            console.log('Reading existing workCount.json');
-            const fileContent = fs.readFileSync('workCount.json', 'utf8');
+        const filePath = 'workCount.json';
+        let data = {};
+
+        // Try to read existing file
+        try {
+            const fileContent = fs.readFileSync(filePath, 'utf8');
+            logger.info('Reading existing workCount.json');
             data = JSON.parse(fileContent);
-            console.log('Current data:', data);
-        } else {
-            console.log('workCount.json does not exist, creating new file');
+            logger.info('Current data:', data);
+        } catch (err) {
+            logger.info('workCount.json does not exist, creating new file');
         }
 
-        // Update or create count for today
+        const dateKey = new Date().toISOString().split('T')[0];
+
         if (!data[dateKey]) {
-            console.log('First entry for today');
+            logger.info('First entry for today');
             data[dateKey] = { count: 1 };
         } else {
-            console.log('Incrementing count for today from', data[dateKey].count);
+            logger.info('Incrementing count for today from', data[dateKey].count);
             data[dateKey].count++;
         }
 
-        // Write updated data synchronously
-        console.log('Writing updated data:', data);
-        fs.writeFileSync('workCount.json', JSON.stringify(data, null, 2));
-        console.log('Successfully updated work count');
-        
-        return data[dateKey].count;
+        // Write updated data back to file
+        logger.info('Writing updated data:', data);
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+        logger.info('Successfully updated work count');
+
+        return true;
     } catch (error) {
-        console.error('Error in workCountIncrease:', error);
-        throw error;
+        logger.error('Error in workCountIncrease:', error);
+        return false;
     }
 };
 

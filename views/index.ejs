@@ -4,184 +4,231 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proxy Scraper Dashboard</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+
         body {
-            background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
-            font-family: 'Roboto', Arial, sans-serif;
+            background: var(--bg);
+            font-family: 'Inter', system-ui, sans-serif;
             min-height: 100vh;
             margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 2rem;
+            display: grid;
+            place-items: center;
         }
+
         .main-card {
-            background: #fff;
-            border-radius: 22px;
-            box-shadow: 0 8px 40px rgba(44, 62, 80, 0.13), 0 1.5px 6px rgba(44,62,80,0.04);
-            max-width: 430px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             width: 100%;
-            padding: 2.7rem 2.2rem 2.2rem 2.2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            max-width: 480px;
+            padding: 2rem;
         }
-        .logo-circle {
-            background: linear-gradient(135deg, #4f8cff 0%, #2355d6 100%);
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.2rem;
-            box-shadow: 0 2px 12px rgba(79, 140, 255, 0.13);
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
         }
-        .logo-circle svg {
-            width: 38px;
-            height: 38px;
-            color: #fff;
+
+        .logo {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 1rem;
         }
+
         h1 {
-            color: #1e293b;
-            font-size: 2.1rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            letter-spacing: 1px;
-            text-align: center;
+            color: var(--text);
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem;
         }
+
         .subtitle {
-            color: #64748b;
-            font-size: 1.08rem;
-            margin-bottom: 2.1rem;
-            text-align: center;
-        }
-        form {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 1.3rem;
-        }
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-        label {
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 0.1rem;
-            font-size: 1.01rem;
-        }
-        input[type="file"] {
-            border: 1.5px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 0.6rem;
-            background: #f1f5f9;
+            color: var(--secondary);
             font-size: 1rem;
         }
-        input[type="text"] {
-            border: 1.5px solid #cbd5e1;
+
+        form {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        label {
+            color: var(--text);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 0.8rem 1rem;
-            font-size: 1.05rem;
-            background: #f1f5f9;
-            transition: border 0.2s;
+            font-size: 0.875rem;
+            transition: all 0.2s;
         }
-        input[type="text"]:focus {
-            border-color: #4f8cff;
+
+        input:focus {
             outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
-        button[type="submit"] {
-            background: linear-gradient(90deg, #4f8cff 0%, #2355d6 100%);
-            color: #fff;
+
+        button {
+            background: var(--primary);
+            color: white;
             border: none;
             border-radius: 8px;
-            padding: 0.95rem 0;
-            font-size: 1.15rem;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 0.2rem;
-            box-shadow: 0 2px 10px rgba(79, 140, 255, 0.09);
-            transition: background 0.2s, transform 0.1s;
-        }
-        button[type="submit"]:hover {
-            background: linear-gradient(90deg, #2355d6 0%, #4f8cff 100%);
-            transform: translateY(-2px) scale(1.03);
-        }
-        .note {
-            font-size: 0.98rem;
-            color: #64748b;
-            text-align: center;
-            margin-top: 1.5rem;
-            background: #f1f5f9;
-            border-radius: 8px;
-            padding: 0.9rem 1rem 0.7rem 1rem;
-            box-shadow: 0 1px 4px rgba(44,62,80,0.04);
-        }
-        .actions {
-            display: flex;
-            justify-content: center;
-            gap: 1.1rem;
-            margin-top: 2.2rem;
-        }
-        .actions a {
-            text-decoration: none;
-            background: linear-gradient(90deg, #0e7490 0%, #38bdf8 100%);
-            color: #fff;
-            border-radius: 7px;
-            padding: 0.7rem 1.5rem;
-            font-size: 1rem;
+            padding: 0.75rem;
             font-weight: 600;
-            box-shadow: 0 1px 6px rgba(14,116,144,0.08);
-            transition: background 0.18s, transform 0.1s;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+        }
+
+        .info-box {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-box h3 {
+            color: var(--text);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem;
+        }
+
+        .info-box p {
+            color: var(--secondary);
+            font-size: 0.875rem;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .action-btn {
             display: flex;
             align-items: center;
-            gap: 0.4rem;
+            justify-content: center;
+            gap: 0.5rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
         }
-        .actions a:hover {
-            background: linear-gradient(90deg, #155e75 0%, #0ea5e9 100%);
-            transform: translateY(-1px) scale(1.03);
+
+        .action-btn:hover {
+            background: var(--bg);
+            border-color: var(--primary);
+            color: var(--primary);
         }
-        @media (max-width: 500px) {
+
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+
             .main-card {
-                padding: 1.2rem 0.5rem 1.2rem 0.5rem;
-                max-width: 98vw;
+                padding: 1.5rem;
+            }
+
+            .actions {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
     <div class="main-card">
-        <div class="logo-circle">
-            <svg fill="none" viewBox="0 0 32 32">
-                <rect x="4" y="8" width="24" height="16" rx="4" fill="currentColor" opacity="0.18"/>
-                <rect x="8" y="12" width="16" height="8" rx="2" fill="currentColor"/>
-                <circle cx="16" cy="16" r="2.5" fill="#fff"/>
-            </svg>
+        <div class="header">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h1>Proxy Scraper</h1>
+            <p class="subtitle">Upload proxies and start scraping in seconds</p>
         </div>
-        <h1>Proxy Scraper</h1>
-        <div class="subtitle">Upload your proxy list and specify a target URL to begin scraping.</div>
+
         <form action="/scrape" method="post" enctype="multipart/form-data" autocomplete="off">
             <div class="input-group">
-                <label for="file">Proxy List (.txt)</label>
+                <label for="file">Proxy List</label>
                 <input type="file" id="file" name="file" accept=".txt" required>
             </div>
             <div class="input-group">
                 <label for="url">Target URL</label>
-                <input type="text" id="url" name="url" placeholder="e.g. https://example.com" required>
+                <input type="text" id="url" name="url" placeholder="https://example.com" required>
             </div>
             <button type="submit">Start Scraping</button>
         </form>
-        <div class="note">
-            <b>Instructions:</b><br>
-            Upload a <b>.txt</b> file with one proxy per line.<br>
-            Example: <code>123.45.67.89:8080</code>
+
+        <div class="info-box">
+            <h3>How to use</h3>
+            <p>Upload a text file containing one proxy per line in the format:<br>
+            <code>ip:port</code> or <code>username:password@ip:port</code></p>
         </div>
+
         <div class="actions">
-            <a href="/reset-ip" title="Reset Proxy IP">&#x21bb; Reset IP</a>
-            <a href="/stop-scrape" title="Stop Scraping">&#x23F9; Stop</a>
-            <a href="/resume-scrape" title="Resume Scraping">&#x25B6; Resume</a>
+            <a href="/reset-ip" class="action-btn">
+                <span>↺</span>
+                <span>Reset IP</span>
+            </a>
+            <a href="/stop-scrape" class="action-btn">
+                <span>⬛</span>
+                <span>Stop</span>
+            </a>
+            <a href="/resume-scrape" class="action-btn">
+                <span>▶</span>
+                <span>Resume</span>
+            </a>
+            <a href="/logs" class="action-btn">
+                <span>📋</span>
+                <span>Logs</span>
+            </a>
+            <a href="/terminal" class="action-btn">
+                <span>⌨</span>
+                <span>Terminal</span>
+            </a>
+            <a href="/total-work-count" class="action-btn">
+                <span>📊</span>
+                <span>Total Count</span>
+            </a>
+            <a href="/today-work-count" class="action-btn">
+                <span>📈</span>
+                <span>Today's Count</span>
+            </a>
         </div>
     </div>
 </body>

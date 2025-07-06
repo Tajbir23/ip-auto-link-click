@@ -1,0 +1,50 @@
+[2025-07-05T03:34:37.122Z] [INFO] Checking for updates...
+[2025-07-05T03:34:38.272Z] [INFO] Current branch: main
+[2025-07-05T03:34:38.295Z] [INFO] Already up to date
+[2025-07-05T03:34:38.296Z] [INFO] Server is running on http://localhost:3000
+[2025-07-05T03:34:51.881Z] [ERROR] Error reading logs:
+[2025-07-05T03:36:01.320Z] [ERROR] Error reading logs:
+[2025-07-05T03:37:51.383Z] [INFO] Checking for updates...
+[2025-07-05T03:37:52.523Z] [INFO] Current branch: main
+[2025-07-05T03:37:52.545Z] [INFO] Already up to date
+[2025-07-05T03:37:52.546Z] [INFO] Server is running on http://localhost:3000
+[2025-07-05T03:38:06.047Z] [INFO] Checking for updates...
+[2025-07-05T03:38:07.279Z] [INFO] Current branch: main
+[2025-07-05T03:38:07.303Z] [INFO] Already up to date
+[2025-07-05T03:38:07.303Z] [INFO] Server is running on http://localhost:3000
+[2025-07-05T03:39:18.578Z] [INFO] Checking for updates...
+[2025-07-05T03:39:19.719Z] [INFO] Current branch: main
+[2025-07-05T03:39:19.740Z] [INFO] Already up to date
+[2025-07-05T03:39:19.741Z] [INFO] Server is running on http://localhost:3000
+[2025-07-05T03:57:31.540Z] [INFO] Current global Google error count: 0, Active browsers: 0
+[2025-07-05T03:57:31.540Z] [INFO] uploads/proxy.txt has been deleted
+[2025-07-05T03:57:42.519Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-05T03:57:45.569Z] [ERROR] Error interacting with iframe:
+[2025-07-05T03:57:49.235Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-05T03:57:49.603Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-05T03:57:51.155Z] [ERROR] Error interacting with iframe:
+[2025-07-05T03:57:51.562Z] [ERROR] Error interacting with iframe:
+[2025-07-05T03:58:15.744Z] [INFO] Removed proxy: b2b-s1.liveproxies.io:7383:LV2011165-lv_us-790947:TKMQIMAu17v9hVMntoGz
+[2025-07-05T03:58:15.744Z] [WARN] Browser browser_1751687851540_0.8889713351381956 detected Google. New global count: 1
+[2025-07-05T03:58:15.745Z] [INFO] Current global Google error count: 1, Active browsers: 2
+[2025-07-05T03:58:21.320Z] [INFO] Removed proxy: b2b-s2.liveproxies.io:7383:LV2011165-lv_us-645758:TKMQIMAu17v9hVMntoGz
+[2025-07-05T03:58:21.320Z] [WARN] Browser browser_1751687851540_0.7297401320186059 detected Google. New global count: 2
+[2025-07-05T03:58:21.320Z] [INFO] Current global Google error count: 2, Active browsers: 2
+[2025-07-05T03:58:21.761Z] [INFO] Removed proxy: b2b-s3.liveproxies.io:7383:LV2011165-lv_us-770624:TKMQIMAu17v9hVMntoGz
+[2025-07-05T03:58:21.761Z] [WARN] Browser browser_1751687851540_0.9998241649777999 detected Google. New global count: 3
+[2025-07-05T03:58:21.761Z] [INFO] Current global Google error count: 3, Active browsers: 2
+[2025-07-05T03:58:35.070Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-05T03:58:38.115Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-05T03:58:38.221Z] [ERROR] Error interacting with iframe:
+[2025-07-05T03:58:39.069Z] [WARN] Timeout or error while waiting for page load:
+[2025-07-05T03:58:40.905Z] [ERROR] Error interacting with iframe:
+[2025-07-05T03:58:41.692Z] [ERROR] Error interacting with iframe:
+[2025-07-05T03:59:08.376Z] [INFO] Removed proxy: b2b-s5.liveproxies.io:7383:LV2011165-lv_us-721009:TKMQIMAu17v9hVMntoGz
+[2025-07-05T03:59:08.376Z] [WARN] Browser browser_1751687895745_0.08334483885795474 detected Google. New global count: 4
+[2025-07-05T03:59:08.376Z] [INFO] Current global Google error count: 4, Active browsers: 2
+[2025-07-05T03:59:11.067Z] [INFO] Removed proxy: b2b-s9.liveproxies.io:7383:LV2011165-lv_us-605285:TKMQIMAu17v9hVMntoGz
+[2025-07-05T03:59:11.067Z] [WARN] Browser browser_1751687901761_0.2812843778203933 detected Google. New global count: 5
+[2025-07-05T03:59:11.067Z] [INFO] Current global Google error count: 5, Active browsers: 2
+[2025-07-05T03:59:11.067Z] [WARN] Stopping all browsers due to too many Google detections
+[2025-07-05T03:59:11.851Z] [INFO] Removed proxy: b2b-s7.liveproxies.io:7383:LV2011165-lv_us-451091:TKMQIMAu17v9hVMntoGz
+[2025-07-05T03:59:11.851Z] [WARN] Browser browser_1751687901320_0.6198193911039411 detected Google. New global count: 1

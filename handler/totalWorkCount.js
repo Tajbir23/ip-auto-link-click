@@ -1,21 +1,13 @@
 const fs = require('fs')
+const logger = require('./logger')
 
-const totalWorkCount = () => {
+const totalWorkCount = async () => {
     try {
-        if (!fs.existsSync('workCount.json')) {
-            return 0
-        }
         const data = fs.readFileSync('workCount.json', 'utf8')
-        const jsonData = JSON.parse(data)
-        
-        // Sum up all counts from each date
-        const total = Object.values(jsonData).reduce((sum, dateData) => {
-            return sum + (dateData.count || 0)
-        }, 0)
-        
-        return total
+        const workCount = JSON.parse(data)
+        return Object.values(workCount).reduce((total, day) => total + day.count, 0)
     } catch (error) {
-        console.error('Error reading workCount.json:', error)
+        logger.error('Error reading workCount.json:', error)
         return 0
     }
 }

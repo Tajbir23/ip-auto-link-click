@@ -104,7 +104,7 @@ async function googleDetection(page) {
         // Check page content for Google elements
         const hasGoogleElements = await page.evaluate(() => {
             // Check title
-            if (document.title.toLowerCase().includes('google')) {
+            if (document.title && document.title.toLowerCase().includes('google')) {
                 return true;
             }
 
@@ -117,20 +117,24 @@ async function googleDetection(page) {
                 }
             }
 
-            // Check visible text
-            const bodyText = document.body.innerText.toLowerCase();
-            const googleIndicators = [
-                'google search',
-                'google chrome',
-                'sorry... we have detected unusual traffic',
-                'our systems have detected unusual traffic',
-                'please try your request again',
-                'why did this happen?',
-                'ip address',
-                'automated requests'
-            ];
-            
-            return googleIndicators.some(indicator => bodyText.includes(indicator.toLowerCase()));
+            // Check visible text if body exists
+            if (document.body) {
+                const bodyText = document.body.innerText.toLowerCase();
+                const googleIndicators = [
+                    'google search',
+                    'google chrome',
+                    'sorry... we have detected unusual traffic',
+                    'our systems have detected unusual traffic',
+                    'please try your request again',
+                    'why did this happen?',
+                    'ip address',
+                    'automated requests'
+                ];
+                
+                return googleIndicators.some(indicator => bodyText.includes(indicator.toLowerCase()));
+            }
+
+            return false;
         });
 
         if (hasGoogleElements) {

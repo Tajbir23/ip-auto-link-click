@@ -4,8 +4,6 @@ const logger = require("./logger");
 const findAds = async (page) => {
     logger.info('findAds.js 11 line - findAds');
     try {
-
-
         // wait for document ready state complete
         await page.waitForFunction('document.readyState === "complete"');
 
@@ -38,10 +36,12 @@ const findAds = async (page) => {
                     }
                 });
             });
-            logger.info(`findAds.js 41 line - uniqueLinks: ${uniqueLinks}`);
+            
             // Return as array
             return Array.from(uniqueLinks).map(a => a.href);
         });
+
+        logger.info(`findAds.js 41 line - Found ${adLinks.length} unique ad links`);
 
         if (!adLinks.length) {
             throw new Error('No likely ad links found!');
@@ -57,7 +57,7 @@ const findAds = async (page) => {
             if (link) link.click();
         }, adLink);
 
-        logger.info(`findAds.js 59 line - adLink: ${adLink}`);
+        logger.info(`findAds.js 59 line - Clicked ad link: ${adLink}`);
         return adLink; // For logging/debug
 
     } catch (error) {

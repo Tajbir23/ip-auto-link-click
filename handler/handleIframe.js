@@ -59,24 +59,23 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
         });
 
         // Click the link in iframe
+        let clickedHref = '';
         const linkClicked = await frameHandle.evaluate(() => {
             const postMessage = document.querySelector('[data-testid="post_message"]');
-            if (!postMessage) return false;
+            if (!postMessage) return { clicked: false, href: '' };
 
             const links = Array.from(postMessage.querySelectorAll('a[href]'));
             if (links.length > 0) {
                 const randomLink = links[Math.floor(Math.random() * links.length)];
-                // Store the href for logging
                 const href = randomLink.href;
-                logger.info(`handleIframe.js 71 line - Clicking link: ${href}`);
                 randomLink.click();
-                return true;
+                return { clicked: true, href };
             }
-            return false;
+            return { clicked: false, href: '' };
         });
 
-        if (linkClicked) {
-            logger.info('handleIframe.js 79 line - Link clicked in iframe');
+        if (linkClicked.clicked) {
+            logger.info(`handleIframe.js 79 line - Link clicked in iframe: ${linkClicked.href}`);
 
             // Wait for either target events or timeout
             const timeout = new Promise(resolve => setTimeout(() => resolve(false), 10000));

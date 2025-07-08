@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy Scraper Dashboard</title>
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            background: var(--bg);
+            font-family: 'Inter', system-ui, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            display: grid;
+            place-items: center;
+        }
+
+        .main-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            width: 100%;
+            max-width: 480px;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 1rem;
+        }
+
+        h1 {
+            color: var(--text);
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1rem;
+        }
+
+        form {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        label {
+            color: var(--text);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+        }
+
+        .info-box {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-box h3 {
+            color: var(--text);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem;
+        }
+
+        .info-box p {
+            color: var(--secondary);
+            font-size: 0.875rem;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--bg);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+
+            .main-card {
+                padding: 1.5rem;
+            }
+
+            .actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-card">
+        <div class="header">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h1>Proxy Scraper</h1>
+            <p class="subtitle">Upload proxies and start scraping in seconds</p>
+        </div>
+
+        <form action="/scrape" method="post" enctype="multipart/form-data" autocomplete="off">
+            <div class="input-group">
+                <label for="file">Proxy List</label>
+                <input type="file" id="file" name="file" accept=".txt" required>
+            </div>
+            <div class="input-group">
+                <label for="url">Target URL</label>
+                <input type="text" id="url" name="url" placeholder="https://example.com" required>
+            </div>
+            <button type="submit">Start Scraping</button>
+        </form>
+
+        <div class="info-box">
+            <h3>How to use</h3>
+            <p>Upload a text file containing one proxy per line in the format:<br>
+            <code>ip:port</code> or <code>username:password@ip:port</code></p>
+        </div>
+
+        <div class="actions">
+            <a href="/reset-ip" class="action-btn">
+                <span>↺</span>
+                <span>Reset IP</span>
+            </a>
+            <a href="/restart-server" class="action-btn">
+                <span>🔄</span>
+                <span>Restart Server</span>
+            </a>
+            <a href="/stop-scrape" class="action-btn">
+                <span>⬛</span>
+                <span>Stop</span>
+            </a>
+            <a href="/resume-scrape" class="action-btn">
+                <span>▶</span>
+                <span>Resume</span>
+            </a>
+            <a href="/logs" class="action-btn">
+                <span>📋</span>
+                <span>Logs</span>
+            </a>
+            <a href="/terminal" class="action-btn">
+                <span>⌨</span>
+                <span>Terminal</span>
+            </a>
+            <a href="/total-work-count" class="action-btn">
+                <span>📊</span>
+                <span>Total Count</span>
+            </a>
+            <a href="/today-work-count" class="action-btn">
+                <span>📈</span>
+                <span>Today's Count</span>
+            </a>
+            <a href="/server-list" class="action-btn">
+                <span>💻</span>
+                <span>Server List</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

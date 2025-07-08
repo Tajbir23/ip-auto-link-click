@@ -1,0 +1,12 @@
+{
+    "ignore": [
+        "workCount.json",
+        "uploads/*",
+        ".git",
+        "node_modules/*"
+    ],
+    "watch": [
+        "*.js",
+        "views/*"
+    ]
+} 

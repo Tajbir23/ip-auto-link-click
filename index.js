@@ -146,7 +146,7 @@ app.get('/server-list', (req, res) => {
         console.log('All Node.js ports:', ports);
         res.json({ server_list: ports });
     } catch (error) {
-        console.log('Error getting server list:', error);
+        logger.error('index.js 149 line - Error getting server list: ' + error.message);
         res.status(500).send('Failed to get server list');
     }
 })

@@ -13,6 +13,7 @@ const net = require('net')
 const runWork = require('./handler/runWork')
 const checkLogs = require('./handler/checkLogs')
 const terminalLogs = require('./handler/terminal-logs')
+const remainingIp = require('./handler/remaining-ip')
 
 function findAvailablePort(startPort, callback) {
     const server = net.createServer();
@@ -153,6 +154,8 @@ app.get('/server-list', (req, res) => {
 
 // WebSocket endpoint for real-time terminal logs
 app.get('/terminal-logs', terminalLogs);
+
+app.get('/remaining-ip', remainingIp)
 
 findAvailablePort(3000, (PORT) => {
     app.listen(PORT, async () => {

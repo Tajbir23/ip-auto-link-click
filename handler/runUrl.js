@@ -362,9 +362,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             await simulateViewportResize(page);
 
             await page.goto(url, { 
-                waitUntil: 'networkidle2',
-                timeout: 60000 
-            }).catch(e => logger.error(`runUrl.js 367 line - Initial navigation timeout: ${e}`));
+                waitUntil: 'networkidle0'}).catch(e => logger.error(`runUrl.js 367 line - Initial navigation timeout: ${e}`));
 
             await isLoadingPage(page);
             

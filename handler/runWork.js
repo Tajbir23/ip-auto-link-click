@@ -15,7 +15,7 @@ const runWork = async (url) => {
     let proxyFile = fs.readFileSync('uploads/proxy.txt', 'utf-8')
     let proxies = proxyFile.split('\n').map(line => line.trim()).filter(line => line !== '')
 
-    const BATCH_SIZE = 4;
+    const BATCH_SIZE = 6;
     let index = 0;
     let active = [];
 

@@ -361,8 +361,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             await simulateKeyboardBehavior(page);
             await simulateViewportResize(page);
 
-            await page.goto(url, { 
-                waitUntil: 'networkidle0'}).catch(e => logger.error(`runUrl.js 367 line - Initial navigation timeout: ${e}`));
+            await page.goto(url, { waitUntil: 'networkidle0'}).catch(e => logger.error(`runUrl.js 367 line - Initial navigation timeout: ${e}`));
 
             await isLoadingPage(page);
             

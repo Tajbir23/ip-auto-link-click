@@ -434,6 +434,10 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
                 return { success: false, isGoogleDetected: true };
             }
 
+            // check ads or not
+            logger.info(`runUrl.js 438 line - Browser ${browserId} - Checking ads...`);
+            await findAds(page);
+            logger.info(`runUrl.js 440 line - Browser ${browserId} - Ads checked`);
             // increase work count
             if(success) {
                 try {

@@ -1,4 +1,4 @@
-const findAds = require("./findAds");
+
 const isLoadingPage = require("./isLoadingPage");
 const logger = require("./logger");
 
@@ -143,7 +143,6 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
                         logger.info('handleIframe.js 144 line - closing new page');
                         // wait for complete load
                         await newPage.waitForFunction('document.readyState === "complete"');
-                        await findAds(newPage);
                         // wait for 5 seconds
                         await new Promise(resolve => setTimeout(resolve, 5000));
                         // await newPage.close();

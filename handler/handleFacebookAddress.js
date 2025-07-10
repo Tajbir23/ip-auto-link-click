@@ -1,4 +1,4 @@
-const findAds = require("./findAds");
+
 const isLoadingPage = require("./isLoadingPage");
 const googleDetection = require('./googleDetection')
 const logger = require('./logger')
@@ -135,8 +135,7 @@ const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetec
                         await newPage.waitForFunction('document.readyState === "complete"');
                         // wait for 5 seconds
                         await new Promise(resolve => setTimeout(resolve, 5000));
-                        await findAds(newPage);
-                        // await newPage.close();
+                        
                     }
                 } catch (error) {
                     logger.error('Error checking target:', error.message);

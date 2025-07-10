@@ -7,18 +7,21 @@ async function googleDetection(page) {
         const isGoogleSearchUrl = (url) => {
             // Only match Google search URLs
             const googleSearchPatterns = [
-                // Match Google search domains but not subdomains like play.google.com
-                /^https?:\/\/(www\.)?google\.[a-z]+\/search/i,
-                /^https?:\/\/(www\.)?google\.co\.[a-z]+\/search/i,
-                /^https?:\/\/(www\.)?google\.com\.?[a-z]*\/search/i,
-                // Match Google search result pages
-                /\?q=[^&]+(&|$)/i,
-                // Match Google search-related paths
-                /\/webhp$/i,
-                /\/complete\/search/i
+                // Match Google search domains with /search path
+                /^https?:\/\/(www\.)?google\.[a-z]+\/search\?/i,
+                /^https?:\/\/(www\.)?google\.co\.[a-z]+\/search\?/i,
+                /^https?:\/\/(www\.)?google\.com\.?[a-z]*\/search\?/i,
+                // Match Google search result pages with q parameter
+                /^https?:\/\/(www\.)?google\.[a-z]+.*[?&]q=/i,
+                /^https?:\/\/(www\.)?google\.co\.[a-z]+.*[?&]q=/i,
+                /^https?:\/\/(www\.)?google\.com\.?[a-z]*.*[?&]q=/i
             ];
             
-            return googleSearchPatterns.some(pattern => pattern.test(url));
+            // Must match both the domain and search patterns
+            const isGoogleDomain = /^https?:\/\/(www\.)?google\.(com|co\.[a-z]+|[a-z]+)$/i.test(new URL(url).origin);
+            const hasSearchPattern = googleSearchPatterns.some(pattern => pattern.test(url));
+            
+            return isGoogleDomain && hasSearchPattern;
         };
 
         // Create a promise that resolves when navigation occurs
@@ -106,15 +109,13 @@ async function googleDetection(page) {
         const hasGoogleElements = await page.evaluate(() => {
             // Check for Google search-specific elements
             const searchIndicators = [
-                'google search',
-                'search results',
-                'search tools',
-                'advanced search'
+                'google search results',
+                'google advanced search',
+                'google search tools'
             ];
             
             // Check title
-            if (document.title && searchIndicators.some(indicator => 
-                document.title.toLowerCase().includes(indicator))) {
+            if (document.title && document.title.toLowerCase().includes('google search')) {
                 return true;
             }
 
@@ -135,17 +136,17 @@ async function googleDetection(page) {
 
         // Check for specific Google Search elements
         const hasGoogleUI = await page.evaluate(() => {
-            // Check for Google search elements
-            if (document.querySelector('input[name="q"]') ||
-                document.querySelector('div#searchform') ||
-                document.querySelector('div.g') || // Google search result container
-                document.querySelector('div#search') || // Main search container
-                document.querySelector('div#rcnt') || // Search results container
-                document.querySelector('div#main')) { // Main content area
-                return true;
-            }
+            // Check for Google search-specific elements
+            const googleSearchSelectors = [
+                'form[action*="google.com/search"]',
+                'form[action*="google.co"]:has(input[name="q"])',
+                'div#searchform:has(input[name="q"])',
+                'div.g:has(h3.r)',  // Google search result container
+                'div#search:has(div.g)',  // Main search container with results
+                'div#rcnt:has(div#center_col)'  // Search results container
+            ];
 
-            return false;
+            return googleSearchSelectors.some(selector => document.querySelector(selector));
         });
 
         if (hasGoogleUI) {
@@ -154,7 +155,7 @@ async function googleDetection(page) {
             return true;
         }
 
-        logger.info('googleDetection.js 177 line - No Google Search indicators detected');
+        logger.error('googleDetection.js 177 line - No Google Search indicators detected');
         isGoogleDetection = false;
         return isGoogleDetection;
 

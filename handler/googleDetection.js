@@ -3,22 +3,22 @@ const logger = require("./logger");
 async function googleDetection(page) {
     let isGoogleDetection = false;
     try {
-        // Helper function to check if a URL is Google-related
-        const isGoogleUrl = (url) => {
-            const googlePatterns = [
-                /google\.[a-z]+/i,
-                /google\.co\.[a-z]+/i,
-                /google\.com\.?[a-z]*/i,
-                /\/sorry\/index/i,
-                /gstatic\.com/i,
-                /googleusercontent\.com/i,
-                /google\/gen_204/i,
-                /google\/log/i
+        // Helper function to check if a URL is Google search-related
+        const isGoogleSearchUrl = (url) => {
+            // Only match Google search URLs
+            const googleSearchPatterns = [
+                // Match Google search domains but not subdomains like play.google.com
+                /^https?:\/\/(www\.)?google\.[a-z]+\/search/i,
+                /^https?:\/\/(www\.)?google\.co\.[a-z]+\/search/i,
+                /^https?:\/\/(www\.)?google\.com\.?[a-z]*\/search/i,
+                // Match Google search result pages
+                /\?q=[^&]+(&|$)/i,
+                // Match Google search-related paths
+                /\/webhp$/i,
+                /\/complete\/search/i
             ];
             
-            return googlePatterns.some(pattern => pattern.test(url)) ||
-                   url.includes('google.') ||
-                   url.includes('Google');
+            return googleSearchPatterns.some(pattern => pattern.test(url));
         };
 
         // Create a promise that resolves when navigation occurs
@@ -30,9 +30,9 @@ async function googleDetection(page) {
                 const url = request.url();
                 urls.add(url);
                 
-                // Check if this request is to Google
-                if (isGoogleUrl(url)) {
-                    logger.info(`googleDetection.js 35 line - Google detected in request: ${url}`);
+                // Check if this request is to Google Search
+                if (isGoogleSearchUrl(url)) {
+                    logger.info(`googleDetection.js 35 line - Google Search detected in request: ${url}`);
                     resolve(true);
                     isGoogleDetection = true;
                     return;
@@ -44,9 +44,9 @@ async function googleDetection(page) {
                 const url = response.url();
                 urls.add(url);
                 
-                // Check if this response is from Google
-                if (isGoogleUrl(url)) {
-                    logger.info(`googleDetection.js 48 line - Google detected in response: ${url}`);
+                // Check if this response is from Google Search
+                if (isGoogleSearchUrl(url)) {
+                    logger.info(`googleDetection.js 48 line - Google Search detected in response: ${url}`);
                     resolve(true);
                     isGoogleDetection = true;
                     return;
@@ -58,9 +58,9 @@ async function googleDetection(page) {
                 const url = frame.url();
                 urls.add(url);
                 
-                // Check if this navigation is to Google
-                if (isGoogleUrl(url)) {
-                    logger.info(`googleDetection.js 63 line - Google detected in navigation: ${url}`);
+                // Check if this navigation is to Google Search
+                if (isGoogleSearchUrl(url)) {
+                    logger.info(`googleDetection.js 63 line - Google Search detected in navigation: ${url}`);
                     resolve(true);
                     isGoogleDetection = true;
                     return;
@@ -84,10 +84,9 @@ async function googleDetection(page) {
         // Get current URL
         const url = await page.url();
         
-        
         // Check current URL
-        if (isGoogleUrl(url)) {
-            logger.info(`googleDetection.js 89 line - Google detected in current URL: ${url}`);
+        if (isGoogleSearchUrl(url)) {
+            logger.info(`googleDetection.js 89 line - Google Search detected in current URL: ${url}`);
             isGoogleDetection = true;
             return true;
         }
@@ -97,71 +96,52 @@ async function googleDetection(page) {
         logger.info(`googleDetection.js 97 line - Browser location: ${location}`);
         
         // Check browser location
-        if (isGoogleUrl(location)) {
-            logger.info(`googleDetection.js 101 line - Google detected in browser location: ${location}`);
+        if (isGoogleSearchUrl(location)) {
+            logger.info(`googleDetection.js 101 line - Google Search detected in browser location: ${location}`);
             isGoogleDetection = true;
             return true;
         }
 
-        // Check page content for Google elements
+        // Check page content for Google Search elements
         const hasGoogleElements = await page.evaluate(() => {
+            // Check for Google search-specific elements
+            const searchIndicators = [
+                'google search',
+                'search results',
+                'search tools',
+                'advanced search'
+            ];
+            
             // Check title
-            if (document.title && document.title.toLowerCase().includes('google')) {
+            if (document.title && searchIndicators.some(indicator => 
+                document.title.toLowerCase().includes(indicator))) {
                 return true;
-            }
-
-            // Check meta tags
-            const metas = document.getElementsByTagName('meta');
-            for (const meta of metas) {
-                const content = (meta.content || '').toLowerCase();
-                if (content.includes('google.') || content.includes('google')) {
-                    return true;
-                }
             }
 
             // Check visible text if body exists
             if (document.body) {
                 const bodyText = document.body.innerText.toLowerCase();
-                const googleIndicators = [
-                    'google search',
-                    'google chrome',
-                    'sorry... we have detected unusual traffic',
-                    'our systems have detected unusual traffic',
-                    'please try your request again',
-                    'why did this happen?',
-                    'ip address',
-                    'automated requests'
-                ];
-                
-                return googleIndicators.some(indicator => bodyText.includes(indicator.toLowerCase()));
+                return searchIndicators.some(indicator => bodyText.includes(indicator));
             }
 
             return false;
         });
 
         if (hasGoogleElements) {
-            logger.info('googleDetection.js 143 line - Google elements found in page content');
+            logger.info('googleDetection.js 143 line - Google Search elements found in page content');
             isGoogleDetection = true;
             return true;
         }
 
-        // Check for specific Google elements
+        // Check for specific Google Search elements
         const hasGoogleUI = await page.evaluate(() => {
-            // Check for Google's reCAPTCHA
-            if (document.querySelector('iframe[src*="recaptcha"]') ||
-                document.querySelector('div.g-recaptcha')) {
-                return true;
-            }
-
-            // Check for Google's sorry page elements
-            if (document.querySelector('form#captcha-form') ||
-                document.querySelector('a[href*="google.com/sorry"]')) {
-                return true;
-            }
-
             // Check for Google search elements
             if (document.querySelector('input[name="q"]') ||
-                document.querySelector('div#searchform')) {
+                document.querySelector('div#searchform') ||
+                document.querySelector('div.g') || // Google search result container
+                document.querySelector('div#search') || // Main search container
+                document.querySelector('div#rcnt') || // Search results container
+                document.querySelector('div#main')) { // Main content area
                 return true;
             }
 
@@ -169,12 +149,12 @@ async function googleDetection(page) {
         });
 
         if (hasGoogleUI) {
-            logger.info('googleDetection.js 172 line - Google UI elements detected');
+            logger.info('googleDetection.js 172 line - Google Search UI elements detected');
             isGoogleDetection = true;
             return true;
         }
 
-        logger.info('googleDetection.js 177 line - No Google indicators detected');
+        logger.info('googleDetection.js 177 line - No Google Search indicators detected');
         isGoogleDetection = false;
         return isGoogleDetection;
 

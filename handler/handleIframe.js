@@ -2,6 +2,21 @@
 const isLoadingPage = require("./isLoadingPage");
 const logger = require("./logger");
 
+// Helper function to check if a URL is a legitimate Google resource
+const isLegitimateGoogleResource = (url) => {
+    const legitimatePatterns = [
+        /google\.com\/recaptcha\//,
+        /gstatic\.com\/recaptcha\//,
+        /google\.com\/js\//,
+        /googleapis\.com\//,
+        /google\.com\/maps\//,
+        /google\.com\/analytics\//,
+        /googletagmanager\.com\//,
+        /google-analytics\.com\//
+    ];
+    return legitimatePatterns.some(pattern => pattern.test(url));
+};
+
 const handleIframe = async (page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success, proxy) => {
     // Wait for iframes and interact
     await page.waitForSelector('iframe[src*="facebook.com/plugins/post.php"]');
@@ -34,12 +49,13 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
         const allTargets = new Set();
         const targetCreatedPromise = new Promise(resolve => {
             context.on('targetcreated', async (target) => {
-                logger.info(`handleIframe.js 37 line - New target created: ${target.url()}`);
+                const targetUrl = target.url();
+                logger.info(`handleIframe.js 37 line - New target created: ${targetUrl}`);
                 allTargets.add(target);
                 
-                // Check if target URL is Google
-                if (target.url().includes('google.') || target.url().match(/google\.[a-z]+/)) {
-                    logger.info(`handleIframe.js 42 line - Google detected in new target: ${target.url()}`);
+                // Check if target URL is Google but not a legitimate resource
+                if ((targetUrl.includes('google.') || targetUrl.match(/google\.[a-z]+/)) && !isLegitimateGoogleResource(targetUrl)) {
+                    logger.info(`handleIframe.js 42 line - Suspicious Google URL detected in new target: ${targetUrl}`);
                     resolve(true);
                 }
             });
@@ -48,11 +64,12 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
         // Track all target changes
         const targetChangedPromise = new Promise(resolve => {
             context.on('targetchanged', async (target) => {
-                logger.info(`handleIframe.js 51 line - Target changed: ${target.url()}`);
+                const targetUrl = target.url();
+                logger.info(`handleIframe.js 51 line - Target changed: ${targetUrl}`);
                 
-                // Check if target URL is Google
-                if (target.url().includes('google.') || target.url().match(/google\.[a-z]+/)) {
-                    logger.info(`handleIframe.js 54 line - Google detected in target change: ${target.url()}`);
+                // Check if target URL is Google but not a legitimate resource
+                if ((targetUrl.includes('google.') || targetUrl.match(/google\.[a-z]+/)) && !isLegitimateGoogleResource(targetUrl)) {
+                    logger.info(`handleIframe.js 54 line - Suspicious Google URL detected in target change: ${targetUrl}`);
                     resolve(true);
                 }
             });
@@ -88,17 +105,12 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
             // Log all targets we've seen
             logger.info(`handleIframe.js 89 line - All targets encountered: ${Array.from(allTargets).map(t => t.url())}`);
 
-            // If Google was detected
+            // If suspicious Google URL was detected
             if (isGoogle) {
-                logger.info('handleIframe.js 93 line - Google detected through target monitoring');
+                logger.info('handleIframe.js 93 line - Suspicious Google URL detected through target monitoring');
                 googleErrorCount++;
-                // success = false;
-                // if (proxy) {
-                //     await removeProxy(proxy, 'uploads/proxy.txt');
-                // }
-                // return { success: false, googleErrorCount };
-            }else{
-                logger.info('handleIframe.js 102 line - No Google detected, proceeding with success');
+            } else {
+                logger.info('handleIframe.js 102 line - No suspicious Google URLs detected, proceeding with success');
                 googleErrorCount = 0;
             }
 
@@ -106,16 +118,11 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
             // Additional check with googleDetection
             const mainPageIsGoogle = await googleDetection(page);
             if (mainPageIsGoogle) {
-                logger.info('handleIframe.js 110 line - Google detected through googleDetection');
+                logger.info('handleIframe.js 110 line - Google search page detected through googleDetection');
                 googleErrorCount++;
                 logger.info(`handleIframe.js 112 line - googleErrorCount: ${googleErrorCount}`);
-                // success = false;
-                // if (proxy) {
-                //     await removeProxy(proxy, 'uploads/proxy.txt');
-                // }
-                // return { success: false, googleErrorCount };
-            }else{
-                logger.info('handleIframe.js 116 line - No Google detected, proceeding with success');
+            } else {
+                logger.info('handleIframe.js 116 line - No Google search page detected, proceeding with success');
                 googleErrorCount = 0;
             }
 
@@ -124,35 +131,37 @@ const handleIframe = async (page, randomDelay, humanScroll, googleDetection, rem
                 try {
                     const newPage = await target.page();
                     if (newPage) {
-                        logger.info(`handleIframe.js 128 line - Checking new page: ${await newPage.url()}`);
+                        const newPageUrl = await newPage.url();
+                        logger.info(`handleIframe.js 128 line - Checking new page: ${newPageUrl}`);
+                        
+                        // Skip Google detection for legitimate resources
+                        if (isLegitimateGoogleResource(newPageUrl)) {
+                            logger.info('handleIframe.js 131 line - Legitimate Google resource detected, skipping Google detection');
+                            continue;
+                        }
+                        
                         const isGooglePage = await googleDetection(newPage);
                         if (isGooglePage) {
-                            logger.info('handleIframe.js 131 line - Google detected in new page');
+                            logger.info('handleIframe.js 131 line - Google search page detected in new page');
                             googleErrorCount++;
                             logger.info(`handleIframe.js 133 line - googleErrorCount: ${googleErrorCount}`);
-                            // success = false;
-                            // if (proxy) {
-                            //     await removeProxy(proxy, 'uploads/proxy.txt');
-                            // }
-                            // await newPage.close();
-                            // return { success: false, googleErrorCount };
-                        }else{
-                            logger.info('handleIframe.js 141 line - No Google detected, proceeding with success');
+                        } else {
+                            logger.info('handleIframe.js 141 line - No Google search page detected, proceeding with success');
                             googleErrorCount = 0;
                         }
+                        
                         logger.info('handleIframe.js 144 line - closing new page');
                         // wait for complete load
                         await newPage.waitForFunction('document.readyState === "complete"');
                         // wait for 5 seconds
                         await new Promise(resolve => setTimeout(resolve, 5000));
-                        // await newPage.close();
                     }
                 } catch (error) {
                     logger.error(`handleIframe.js 153 line - Error checking target: ${error.message}`);
                 }
             }
 
-            logger.info('handleIframe.js 157 line - No Google detected, proceeding with success');
+            logger.info('handleIframe.js 157 line - No Google search pages detected, proceeding with success');
             success = true;
             
             // Continue with remaining actions

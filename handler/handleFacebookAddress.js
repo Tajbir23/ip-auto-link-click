@@ -1,6 +1,5 @@
 
 const isLoadingPage = require("./isLoadingPage");
-const googleDetection = require('./googleDetection')
 const logger = require('./logger')
 
 const handleFacebookAddress = async (page, randomDelay, humanScroll, googleDetection, removeProxy, workCountIncrease, googleErrorCount, success, proxy) => {

@@ -157,6 +157,18 @@ app.get('/terminal-logs', terminalLogs);
 
 app.get('/remaining-ip', remainingIp)
 
+// Work count view route
+app.get('/work-count', async (req, res) => {
+    try {
+        const data = fs.readFileSync('workCount.json', 'utf8');
+        const workCount = JSON.parse(data);
+        res.render('workCount', { workCount });
+    } catch (error) {
+        logger.error(`index.js - Error reading workCount.json: ${error}`);
+        res.render('workCount', { workCount: {} });
+    }
+});
+
 findAvailablePort(3000, (PORT) => {
     app.listen(PORT, async () => {
         // Write PID file for this server

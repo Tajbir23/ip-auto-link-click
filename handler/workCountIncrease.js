@@ -1,7 +1,7 @@
 const fs = require('fs');
 const logger = require('./logger');
 
-const workCountIncrease = async () => {
+const workCountIncrease = async (url) => {
     logger.info('workCountIncrease.js 5 line - Starting workCountIncrease function');
     try {
         const filePath = 'workCount.json';
@@ -19,13 +19,25 @@ const workCountIncrease = async () => {
 
         const dateKey = new Date().toISOString().split('T')[0];
 
+        // Initialize date entry if it doesn't exist
         if (!data[dateKey]) {
             logger.info('workCountIncrease.js 23 line - First entry for today');
-            data[dateKey] = { count: 1 };
-        } else {
-            logger.info('workCountIncrease.js 25 line - Incrementing count for today from', data[dateKey].count);
-            data[dateKey].count++;
+            data[dateKey] = {
+                urls: {}
+            };
         }
+
+        // Initialize or increment URL count for today
+        if (!data[dateKey].urls[url]) {
+            logger.info(`workCountIncrease.js - First entry for URL ${url} today`);
+            data[dateKey].urls[url] = 1;
+        } else {
+            logger.info(`workCountIncrease.js - Incrementing count for URL ${url} from ${data[dateKey].urls[url]}`);
+            data[dateKey].urls[url]++;
+        }
+
+        // Calculate total count for today
+        data[dateKey].totalCount = Object.values(data[dateKey].urls).reduce((sum, count) => sum + count, 0);
 
         // Write updated data back to file
         logger.info('workCountIncrease.js 31 line - Writing updated data:', data);

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Count Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet">
+    <style>
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+            color: white;
+        }
+        .table-container {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-4">
+        <h1 class="mb-4 text-center">Work Count Dashboard</h1>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Total URLs</h5>
+                        <h2 class="card-text" id="totalUrls">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Total Clicks</h5>
+                        <h2 class="card-text" id="totalClicks">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Active Days</h5>
+                        <h2 class="card-text" id="activeDays">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="dateRange">Date Range</label>
+                        <input type="text" class="form-control" id="dateRange">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="urlFilter">URL Filter</label>
+                        <input type="text" class="form-control" id="urlFilter" placeholder="Filter by URL...">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="minClicks">Minimum Clicks</label>
+                        <input type="number" class="form-control" id="minClicks" min="0" value="0">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-container">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Date</th>
+                                <th>URL</th>
+                                <th>Clicks</th>
+                                <th>% of Daily Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script>
+        // Initialize data
+        const workCountData = JSON.parse('<%- JSON.stringify(workCount) %>');
+        let filteredData = [];
+
+        // Initialize date range picker
+        $('#dateRange').daterangepicker({
+            startDate: moment().subtract(29, 'days'),
+            endDate: moment(),
+            ranges: {
+               'Today': [moment(), moment()],
+               'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+               'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+               'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+               'This Month': [moment().startOf('month'), moment().endOf('month')],
+               'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        });
+
+        // Update filtered data
+        function updateFilteredData() {
+            const dateRange = $('#dateRange').data('daterangepicker');
+            const urlFilter = $('#urlFilter').val().toLowerCase();
+            const minClicks = parseInt($('#minClicks').val()) || 0;
+
+            filteredData = [];
+            
+            // Process data based on filters
+            Object.entries(workCountData).forEach(([date, dayData]) => {
+                const momentDate = moment(date);
+                if (momentDate.isBetween(dateRange.startDate, dateRange.endDate, 'day', '[]')) {
+                    Object.entries(dayData.urls || {}).forEach(([url, clicks]) => {
+                        if (url.toLowerCase().includes(urlFilter) && clicks >= minClicks) {
+                            filteredData.push({
+                                date,
+                                url,
+                                clicks,
+                                totalDayClicks: dayData.totalCount || 0
+                            });
+                        }
+                    });
+                }
+            });
+
+            updateDisplay();
+        }
+
+        // Update display
+        function updateDisplay() {
+            // Update stats
+            const uniqueUrls = new Set(filteredData.map(item => item.url));
+            const totalClicks = filteredData.reduce((sum, item) => sum + item.clicks, 0);
+            const uniqueDates = new Set(filteredData.map(item => item.date));
+
+            $('#totalUrls').text(uniqueUrls.size);
+            $('#totalClicks').text(totalClicks);
+            $('#activeDays').text(uniqueDates.size);
+
+            // Update table
+            const tableBody = $('#dataTableBody');
+            tableBody.empty();
+
+            filteredData.sort((a, b) => new Date(b.date) - new Date(a.date))
+                .forEach(item => {
+                    const percentage = ((item.clicks / item.totalDayClicks) * 100).toFixed(1);
+                    tableBody.append(`
+                        <tr>
+                            <td>${item.date}</td>
+                            <td>${item.url}</td>
+                            <td>${item.clicks}</td>
+                            <td>${percentage}%</td>
+                        </tr>
+                    `);
+                });
+        }
+
+        // Event listeners
+        $('#dateRange').on('apply.daterangepicker', updateFilteredData);
+        $('#urlFilter').on('input', updateFilteredData);
+        $('#minClicks').on('input', updateFilteredData);
+
+        // Initial update
+        updateFilteredData();
+    </script>
+</body>
+</html>

@@ -439,7 +439,7 @@ const runUrl = async (url, proxy, globalGoogleErrorCount, browserId) => {
             if(success) {
                 try {
                     logger.info(`runUrl.js 439 line - Browser ${browserId} - Starting workCountIncrease...`);
-                    workCountIncrease();
+                    workCountIncrease(url);
                     logger.info(`runUrl.js 441 line - Browser ${browserId} - workCountIncrease completed`);
                 } catch (error) {
                     logger.error(`runUrl.js 443 line - Browser ${browserId} - Failed to increase work count: ${error}`);

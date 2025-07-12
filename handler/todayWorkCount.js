@@ -6,7 +6,9 @@ const todayWorkCount = async () => {
         const data = fs.readFileSync('workCount.json', 'utf8')
         const workCount = JSON.parse(data)
         const today = new Date().toISOString().split('T')[0]
-        return workCount[today]?.count || 0
+        
+        // Return totalCount for today if exists, otherwise 0
+        return workCount[today]?.totalCount || 0
     } catch (error) {
         logger.error(`todayWorkCount.js 12 line - Error reading workCount.json: ${error}`)
         try {

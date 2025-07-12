@@ -1,4 +1,5 @@
 {
+    "restartable": "rs",
     "ignore": [
         "workCount.json",
         "uploads/*",
@@ -8,5 +9,10 @@
     "watch": [
         "*.js",
         "views/*"
-    ]
+    ],
+    "delay": "2500",
+    "exitcrash": true,
+    "env": {
+        "NODE_ENV": "development"
+    }
 } 
